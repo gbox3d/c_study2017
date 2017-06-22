@@ -1,8 +1,8 @@
-// exam2.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam4.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam2.h"
+#include "exam4.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM2, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM4, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM2));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM4));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM2));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM4));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM2);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM4);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -143,16 +143,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_PAINT:
-		
-	{
-		
+        {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
-	
-		TextOut(hdc, 0, 0, L"hi", 2); 
-		TextOut(hdc, 100, 100, L"hello", 5);
-		TextOut(hdc, 100, 200, L"world", 5);
+
+			//1 번째줄
+			SetPixel(hdc, 100, 100, RGB(255, 0, 0));
+			SetPixel(hdc, 101, 100, RGB(255, 0, 0));
+			SetPixel(hdc, 102, 100, RGB(255, 0, 0));
+			SetPixel(hdc, 103, 100, RGB(255, 0, 0));
+			SetPixel(hdc, 104, 100, RGB(255, 0, 0));
+
+			//2번째줄
+			SetPixel(hdc, 100, 101, RGB(255, 153, 0));
+			SetPixel(hdc, 101, 101, RGB(255, 153, 0));
+			SetPixel(hdc, 102, 101, RGB(255, 153, 0));
+			SetPixel(hdc, 103, 101, RGB(255, 153, 0));
+			SetPixel(hdc, 104, 101, RGB(255, 153, 0));
+
+			//3번째줄
+			SetPixel(hdc, 100, 102, RGB(255, 255, 0));
+			SetPixel(hdc, 101, 102, RGB(255, 255, 0));
+			SetPixel(hdc, 102, 102, RGB(255, 255, 0));
+			SetPixel(hdc, 103, 102, RGB(255, 255, 0));
+			SetPixel(hdc, 104, 102, RGB(255, 255, 0));
+
+			//4번째줄
+			SetPixel(hdc, 100, 103, RGB(0, 255, 0));
+			SetPixel(hdc, 101, 103, RGB(0, 255, 0));
+			SetPixel(hdc, 102, 103, RGB(0, 255, 0));
+			SetPixel(hdc, 103, 103, RGB(0, 255, 0));
+			SetPixel(hdc, 104, 103, RGB(0, 255, 0));
+
+			//5번째줄
+			SetPixel(hdc, 100, 104, RGB(255, 0, 0));
+			SetPixel(hdc, 101, 104, RGB(255, 0, 0));
+			SetPixel(hdc, 102, 104, RGB(255, 0, 0));
+			SetPixel(hdc, 103, 104, RGB(255, 0, 0));
+			SetPixel(hdc, 104, 104, RGB(255, 0, 0));
+
             EndPaint(hWnd, &ps);
         }
         break;
