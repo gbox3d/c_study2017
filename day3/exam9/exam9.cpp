@@ -1,8 +1,8 @@
-// exam8.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam9.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam8.h"
+#include "exam9.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM8, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM9, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM8));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM9));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM8));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM9));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM8);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM9);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -123,18 +123,23 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static HWND hEdit;
+	static HWND hList;
+	TCHAR szListItem[][16] = {L"바나나",L"블루베리",L"포도",L"사과",L"망고"};
+
     switch (message)
     {
 	case WM_CREATE:
-	{
-		hEdit = CreateWindow(L"edit", NULL, 
-			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
-			10, 10, 200, 30, hWnd, (HMENU)4001, hInst, NULL);
+		hList = CreateWindow(L"listbox",
+			NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LBS_NOTIFY,
+			10, 10, 100, 200, hWnd, (HMENU)5001, hInst, NULL
+		);
+		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)szListItem[0]);
+		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)szListItem[1]);
+		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)szListItem[2]);
+		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)szListItem[3]);
+		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)szListItem[4]);
 
-		CreateWindow(L"button", L"ok", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			220, 10, 100, 25, hWnd, (HMENU)3001, hInst, NULL);
-	}
+
 		break;
     case WM_COMMAND:
         {
@@ -142,29 +147,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
+			case 5001:
+			{
+				switch (HIWORD(wParam)) {
+				case LBN_SELCHANGE :
+					OutputDebugString(L"change \n");
+
+					break;
+				}
+
+			}
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
-			case 3001:
-			{
-				TCHAR szBuf[256];
-				GetWindowText(hEdit, szBuf, 256);
-				SetWindowText(hEdit, L"");
-
-				OutputDebugString(szBuf);
-
-				HDC hDC = GetDC(hWnd);
-
-				TCHAR szBuf2[256];
-				wsprintf(szBuf2, L"안녕하세요 %s 님", szBuf);
-				TextOut(hDC, 10, 200, szBuf2, wcslen(szBuf2));
-
-				ReleaseDC(hWnd, hDC);
-			}
-				break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
