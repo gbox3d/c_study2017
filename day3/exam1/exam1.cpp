@@ -1,8 +1,8 @@
-// exam10.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam1.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam10.h"
+#include "exam1.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM10, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM1, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM10));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM1));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM10));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM1));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM10);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM1);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -148,33 +148,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
 
-			
-			HBRUSH myBrush, oldBrush;
-			myBrush = CreateSolidBrush(RGB(0, 0, 255));
-			oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-
-			HFONT myFont, oldFont;
-			myFont = CreateFont(60, 0, 0, 0, 0, 0, 0, 0, HANGUL_CHARSET, 0, 0, 0, 0, L"맑은 고딕");
-			oldFont = (HFONT)SelectObject(hdc, myFont);
-
-			Rectangle(hdc, 100, 100, 500, 200);
-
-			TCHAR szMsg[] = L"안녕하세요.";
-			SetTextColor(hdc, RGB(255, 0, 0));
-			SetBkMode(hdc, TRANSPARENT);
-			TextOut(hdc, 120, 120, szMsg, wcslen(szMsg));
-
-			SelectObject(hdc, oldFont);
-			DeleteObject(myFont);
-
-			SelectObject(hdc, oldBrush);
-			DeleteObject(myBrush);
 
 
 
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_MOUSEMOVE:
+	{
+		TCHAR szBuf[256];
+		wsprintf(szBuf, L"%d,%d \n", 
+			LOWORD(lParam), // x 좌표
+			HIWORD(lParam)  // y 좌표
+		);
+
+		OutputDebugString(szBuf);
+
+		HDC hDC;
+
+		hDC = GetDC(hWnd);
+
+		Rectangle(hDC, 100, 100, 300, 150);
+		TextOut(hDC, 120, 120, szBuf, wcslen(szBuf)-1);
+
+		ReleaseDC(hWnd,hDC);
+
+
+
+	}
+		break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
