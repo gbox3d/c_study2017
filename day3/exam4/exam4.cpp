@@ -1,8 +1,8 @@
-// exam3.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam4.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam3.h"
+#include "exam4.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM3, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM4, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM3));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM4));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM3));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM4));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM3);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM4);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -152,17 +152,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_CREATE:
 	{
-		SetTimer(hWnd, 1, 1000, NULL);
+		SetTimer(hWnd, 1, 1, NULL);
 	}
+		
 		break;
 	case WM_TIMER:
 	{
-		static int nCount = 0;
-		TCHAR szBuf[256];
-		wsprintf(szBuf, L"count : %d \n",nCount
-		);
-		nCount = nCount + 1; 
-		OutputDebugString(szBuf);
+		int xPos = rand() % 500;
+		int yPos = rand() % 500;
+		int xSize = 10 + (rand() % 190);
+		int ySize = 10 + (rand() % 190);
+
+		HDC hDC = GetDC(hWnd);
+
+		Rectangle(hDC,xPos, yPos, xPos + xSize, yPos + ySize);
+
+		ReleaseDC(hWnd,hDC);
 
 	}
 		break;
