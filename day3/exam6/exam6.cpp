@@ -1,8 +1,8 @@
-// exam5.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam6.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam5.h"
+#include "exam6.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM5, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM6, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM5));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM6));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM5));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM6));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM5);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM6);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -137,40 +137,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
-			case IDM_ITEM1:
+			case IDM_DRAW_BOX:
 			{
-				static int nCount = 0;
-				TCHAR szBuf[256];
-				wsprintf(szBuf, L"hello item1 %d \n",nCount++);
-				OutputDebugString(szBuf);
 				HDC hDC = GetDC(hWnd);
 
-				Rectangle(hDC, 0, 0, 500, 500);
+				HBRUSH myBrush, oldBrush;
+				myBrush = CreateSolidBrush(RGB(rand() % 256, rand() % 256, rand() % 256));
+				oldBrush = (HBRUSH)SelectObject(hDC, myBrush);
 
-				TextOut(hDC, 100, 100, szBuf, wcslen(szBuf) - 1);
+				Rectangle(hDC, rand() % 500, rand() % 500, rand() % 200, rand() % 200);
+
+				SelectObject(hDC, oldBrush);
+				DeleteObject(myBrush);
 
 				ReleaseDC(hWnd,hDC);
-
 			}
-				
 				break;
-			case ID_TESTMENU_ITEM2:
+			case IDM_DRAW_CIRCLE: 
 			{
-				static int nCount = 0;
-				TCHAR szBuf[256];
-				wsprintf(szBuf, L"hello item2 %d \n", nCount++);
-				OutputDebugString(szBuf);
 				HDC hDC = GetDC(hWnd);
 
-				Rectangle(hDC, 0, 0, 500, 500);
+				HBRUSH myBrush, oldBrush;
+				myBrush = CreateSolidBrush(RGB(rand() % 256, rand() % 256, rand() % 256));
+				oldBrush = (HBRUSH)SelectObject(hDC, myBrush);
 
-				TextOut(hDC, 100, 100, szBuf, wcslen(szBuf) - 1);
+				Ellipse(hDC, rand() % 500, rand() % 500, rand() % 200, rand() % 200);
+
+				SelectObject(hDC, oldBrush);
+				DeleteObject(myBrush);
+
+				ReleaseDC(hWnd, hDC);
+			}
+				break;
+			case IDM_DRAW_LINE:
+			{
+				HDC hDC = GetDC(hWnd);
+
+				HPEN myPen, oldPen;
+				myPen = CreatePen(PS_SOLID, rand() % 20, RGB(rand() % 256, rand() % 256, rand() % 256));
+				oldPen = (HPEN)SelectObject(hDC, myPen);
+
+				MoveToEx(hDC, rand() % 500, rand() % 500, NULL);
+				LineTo(hDC, rand() % 500, rand() % 500);
+
+				SelectObject(hDC, oldPen);
+				DeleteObject(hDC);
 
 				ReleaseDC(hWnd, hDC);
 
-
 			}
 				break;
+
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
