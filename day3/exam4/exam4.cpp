@@ -165,7 +165,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		HDC hDC = GetDC(hWnd);
 
+		HBRUSH myBrush, oldBrush;
+		myBrush = CreateSolidBrush(RGB(rand() % 256, rand() % 256, rand() % 256));
+		oldBrush = (HBRUSH)SelectObject(hDC, myBrush);
+		
 		Rectangle(hDC,xPos, yPos, xPos + xSize, yPos + ySize);
+
+		SelectObject(hDC, oldBrush);
+		DeleteObject(myBrush);
 
 		ReleaseDC(hWnd,hDC);
 
