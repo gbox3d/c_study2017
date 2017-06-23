@@ -173,10 +173,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		ReleaseDC(hWnd,hDC);
 
-
-
 	}
 		break;
+	case WM_LBUTTONDOWN:
+	{
+		TCHAR szBuf[256];
+		wsprintf(szBuf, L"ÁÂ¹öÆ°´Ù¿îÀ§Ä¡ : %d,%d \n",
+			LOWORD(lParam), // x ÁÂÇ¥
+			HIWORD(lParam)  // y ÁÂÇ¥
+		);
+		HDC hDC = GetDC(hWnd);
+
+		Rectangle(hDC, 100, 100+50, 300, 150+50);
+		TextOut(hDC, 120, 120+50, szBuf, wcslen(szBuf) - 1);
+
+		ReleaseDC(hWnd, hDC);
+	}
+		break;
+	case WM_LBUTTONUP:		
+	{
+		TCHAR szBuf[256];
+		wsprintf(szBuf, L"ÁÂ¹öÆ°¾÷À§Ä¡ : %d,%d \n",
+			LOWORD(lParam), // x ÁÂÇ¥
+			HIWORD(lParam)  // y ÁÂÇ¥
+		);
+		HDC hDC = GetDC(hWnd);
+
+		Rectangle(hDC, 100, 100+100, 300, 150+100);
+		TextOut(hDC, 120, 120+100, szBuf, wcslen(szBuf) - 1);
+
+		ReleaseDC(hWnd, hDC);
+
+	}
+	break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
