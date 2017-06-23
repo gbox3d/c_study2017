@@ -158,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hWnd, (HMENU)6012, hInst, NULL
 		);
 		hRBtn6 = CreateWindow(L"button", L"¼±",
-			WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 
 			200, 60, 100, 30,
 			hWnd, (HMENU)6013, hInst, NULL
 		);
