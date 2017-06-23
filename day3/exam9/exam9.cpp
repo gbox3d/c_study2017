@@ -152,10 +152,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				switch (HIWORD(wParam)) {
 				case LBN_SELCHANGE :
 					OutputDebugString(L"change \n");
+					{
+						int nSelectIndex = SendMessage(hList, LB_GETCURSEL, 0, 0);
+						TCHAR szBuf[256];
+						wsprintf(szBuf, L"%d\n", nSelectIndex);
+						OutputDebugString(szBuf);
+						
+						TCHAR szBuf2[256];
+						SendMessage(hList, LB_GETTEXT, nSelectIndex, (LPARAM)szBuf2);
+						OutputDebugString(szBuf2);
 
+
+					}
 					break;
 				}
-
 			}
 				break;
             case IDM_ABOUT:
