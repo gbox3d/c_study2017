@@ -165,8 +165,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		CheckRadioButton(hWnd, 6001, 6003, 6002);
 		CheckRadioButton(hWnd, 6011, 6013, 6012);
-	
-
 	}
 		break;
     case WM_COMMAND:
