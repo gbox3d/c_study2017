@@ -54,11 +54,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_GDIPLUS_EXAM3));
 
+	SYSTEMTIME time;
+
     MSG msg;
+
+	FontFamily  fontFamily(L"굴림");
+	Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
+	//PointF      pointF(30.0f, 10.0f);
+	SolidBrush  solidBrush(Color(255, 255, 255, 0));
+
+	Pen pen(Color(255, 0, 0));
+	SolidBrush brushBlack(Color(0, 0, 0));
 
     // 기본 메시지 루프입니다.
 	bool quit = false;
 	while (!quit) {
+
+		GetSystemTime(&time);
+		LONG time_ms = (time.wSecond * 1000) + time.wMilliseconds;
+
 		if (PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -69,12 +83,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else {
 			// Get DC
 			HDC hdc = GetDC(msg.hwnd);
-			static REAL angle=0;
+			static float angle=0;
 			{
 				Point pt(100, 0);
 				Matrix mt;
-				mt.Rotate(angle++);
-
+				mt.Rotate(angle);
+				angle += 0.01;
 				if (angle > 360) {
 					angle = 0;
 				}
@@ -83,10 +97,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 				Graphics graphics(hdc);
 
-				Pen pen(Color(255, 0, 0));
-				graphics.TranslateTransform(300, 300);
+				
 
-				graphics.DrawLine(&pen, Point(0, 0), pt);
+				Gdiplus::Rect wndRect(0, 0, 200, 200);
+				
+
+				Bitmap bmp(200,200);
+
+				// Create a Graphics object that is associated with the image.
+				Graphics* graph = Graphics::FromImage(&bmp);
+				graph->FillRectangle(&brushBlack, wndRect);
+				graph->DrawString(L"tick :", -1, &font, PointF(0, 0), &solidBrush);
+				graph->TranslateTransform(100, 100);
+				
+				graph->DrawLine(&pen, Point(0, 0), pt);
+				graph->ResetTransform();
+
+
+				graphics.DrawImage(&bmp, wndRect);
+
+				delete graph;
 				
 			}
 			
@@ -213,6 +243,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+	//case WM_ERASEBKGND:
+		//return false;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
