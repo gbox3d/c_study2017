@@ -158,8 +158,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
 			case 4001:
 			{
-				MessageBox(hWnd, L"더하기 버튼 클릭됨.", L"결과", MB_OK);
+				HWND hEdit = GetDlgItem(hWnd, 3001);				
+				TCHAR szBuf[256];
+				GetWindowText(hEdit, szBuf, 256);	
+				int num1 = _wtoi(szBuf);
 
+				HWND hEdit2 = GetDlgItem(hWnd, 3002);
+				TCHAR szBuf2[256];
+				GetWindowText(hEdit2, szBuf2, 256);
+				int num2 = _wtoi(szBuf2);
+
+				int sum = num1 + num2;
+
+				TCHAR szOutput[256];
+
+				swprintf_s(szOutput,256,L"합은 %d ", sum);
+
+			 	MessageBox(hWnd, szOutput, L"결과", MB_OK);
 			}
 				break;
             default:
