@@ -1,8 +1,8 @@
-// exam6.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam7.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam6.h"
+#include "exam7.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM6, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM7, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM6));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM7));
 
     MSG msg;
 
@@ -73,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM6));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM7));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM6);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM7);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -124,53 +124,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
-    {
-	case WM_CREATE:
-
-		CreateWindow(L"static", L"이름을 입력하세요.", WS_CHILD | WS_VISIBLE, 
-			0, 0, 150, 25, hWnd, (HMENU)-1, hInst, NULL);
-		
-		CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | CBS_AUTOHSCROLL | WS_BORDER,
-			10, 25, 100, 25, hWnd, (HMENU)3001, hInst, NULL
-		); 
-
-		CreateWindow(L"static", L"나이를 입력하세요.", WS_CHILD | WS_VISIBLE,
-			150, 0, 150, 25, hWnd, (HMENU)-1, hInst, NULL);
-
-		CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | CBS_AUTOHSCROLL,
-			120, 25, 100, 25, hWnd, (HMENU)3002, hInst, NULL);
-
-		CreateWindow(L"button", L"Ok", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			225, 25, 100, 25, hWnd, (HMENU)4001, hInst, NULL);
-
-
-
-		break;
+    {		
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
-			case 4001:
-			{
-				TCHAR szName[256];
-				GetWindowText(GetDlgItem(hWnd, 3001), szName, 256);
-				TCHAR szAge[256];
-				int nAge;
-				GetWindowText(GetDlgItem(hWnd, 3002), szAge, 256);
-				nAge = _wtoi(szAge);				
-
-				HDC hdc = GetDC(hWnd);
-				TCHAR szBuf[256];
-				swprintf_s(szBuf, 256, L"당신의 이름은 %s 입니다. 나이는 %d살입니다.", szName, nAge);
-				TextOut(hdc, 10, 150, szBuf, wcslen(szBuf));
-
-				ReleaseDC(hWnd,hdc);
-
-				
-			}
-				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -187,6 +147,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
+
+			TCHAR szBuf[256];
+			swprintf_s(szBuf, 256, L"%d", 20 > 10);
+			TextOut(hdc, 0, 0, szBuf, wcslen(szBuf));
+
+			swprintf_s(szBuf, 256, L"%d", 20 < 10);
+			TextOut(hdc, 0, 20, szBuf, wcslen(szBuf));
+
+			swprintf_s(szBuf, 256, L"%d", 10 == 10);
+			TextOut(hdc, 0, 40, szBuf, wcslen(szBuf));
+
+			swprintf_s(szBuf, 256, L"%d", 11 >= 10);
+			TextOut(hdc, 0, 60, szBuf, wcslen(szBuf));
+
             EndPaint(hWnd, &ps);
         }
         break;
