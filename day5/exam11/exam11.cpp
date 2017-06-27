@@ -201,6 +201,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 
+		if (g_nHeroPosY > (500-64) ) {
+			g_nHeroPosY = 500 - 64;
+		}
+
 	}
 		break;
     case WM_COMMAND:
