@@ -35,6 +35,7 @@ void GDIPLUS_Loop(MSG &msg)
 
 	{
 		bool bQuit = false;
+		SolidBrush brushBlack(Color(0, 0, 0));
 		while (bQuit == false) {
 			if (PeekMessage(&msg,NULL,NULL,NULL,PM_REMOVE) ) {
 				if (msg.message == WM_QUIT) {
@@ -48,7 +49,8 @@ void GDIPLUS_Loop(MSG &msg)
 
 				Graphics graphics(hdc);
 				SolidBrush brushRandom(Color(rand() % 256, rand() % 256, rand() % 256));
-
+				
+				graphics.FillRectangle(&brushBlack, 0, 0, 500, 500);
 				graphics.FillRectangle(&brushRandom, g_nHeroPosX, g_nHeroPosY, 64, 64);
 
 				ReleaseDC(msg.hwnd, hdc);
@@ -175,6 +177,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_KEYDOWN:
+	{
+		TCHAR szBuf[256];
+		swprintf_s(szBuf, 256, L"%d \n", wParam);
+		OutputDebugString(szBuf);
+
+		switch (wParam)
+		{
+		case VK_UP:
+			g_nHeroPosY -= 5;
+			break;
+		case VK_DOWN:
+			g_nHeroPosY += 5;
+			break;
+		case VK_LEFT:
+			g_nHeroPosX -= 5;
+			break;
+		case VK_RIGHT:
+			g_nHeroPosX += 5;
+			break;
+		default:
+			break;
+		}
+
+	}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
