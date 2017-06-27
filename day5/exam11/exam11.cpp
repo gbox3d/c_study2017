@@ -1,10 +1,16 @@
-// exam10.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam11.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam10.h"
+#include "exam11.h"
 
 #define MAX_LOADSTRING 100
+
+#include <Windows.h>
+#include <ObjIdl.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment(lib,"Gdiplus.lib")
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -16,6 +22,47 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+int g_nHeroPosX = 100;
+int g_nHeroPosY = 100;
+
+void GDIPLUS_Loop(MSG &msg)
+{
+	//gdi+ 초기화 코드 
+	GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR gdiplusToken;
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+	{
+		bool bQuit = false;
+		while (bQuit == false) {
+			if (PeekMessage(&msg,NULL,NULL,NULL,PM_REMOVE) ) {
+				if (msg.message == WM_QUIT) {
+					bQuit = true;
+				}
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			else {
+				HDC hdc = GetDC(msg.hwnd);
+
+				Graphics graphics(hdc);
+				SolidBrush brushRandom(Color(rand() % 256, rand() % 256, rand() % 256));
+
+				graphics.FillRectangle(&brushRandom, g_nHeroPosX, g_nHeroPosY, 64, 64);
+
+				ReleaseDC(msg.hwnd, hdc);
+			}
+
+		}
+	}
+
+
+	//gdi+ 종료
+	GdiplusShutdown(gdiplusToken);
+
+
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -29,7 +76,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM10, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM11, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -38,11 +85,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM10));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM11));
 
     MSG msg;
 
     // 기본 메시지 루프입니다.
+	GDIPLUS_Loop(msg);
+	/*
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -51,6 +100,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+	*/
 
     return (int) msg.wParam;
 }
@@ -73,10 +123,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM10));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM11));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM10);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM11);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -121,55 +171,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-int g_nNum;
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-	case WM_CREATE:
-	{
-
-		g_nNum = rand() % 100;
-
-		TCHAR szBuf[256];
-		swprintf_s(szBuf, 256, L"correct num : %d", g_nNum);
-		OutputDebugString(szBuf);
-
-		CreateWindow(L"button", L"숫자 맞추기", 
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 0, 0, 100, 25, hWnd, (HMENU)4001, hInst, NULL);
-		CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER, 0, 50, 100, 25, hWnd, (HMENU)3001, hInst, NULL);		
-
-	}
-		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
-			case 4001:
-			{
-				int nInputVal;
-				TCHAR szBuf[256];
-				GetWindowText(GetDlgItem(hWnd, 3001), szBuf, 256);
-				nInputVal = _wtoi(szBuf); //정수 변환 
-
-				if (nInputVal == g_nNum) {
-					MessageBox(hWnd, L"정답입니다.", L"", MB_OK);
-				}
-				else {
-					if (nInputVal > g_nNum) {
-						MessageBox(hWnd, L"너무 커요", L"", MB_OK);
-					}
-					else {
-						MessageBox(hWnd, L"작아요.", L"", MB_OK);
-					}
-					//MessageBox(hWnd, L"오답입니다.", L"", MB_OK);
-				}
-
-			}
-				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
