@@ -21,7 +21,7 @@ namespace mywin32_engine {
 		return _wtoi(szBuf);
 	}
 
-	int GetControlValueDouble(HWND hWnd, int nId)
+	double GetControlValueDouble(HWND hWnd, int nId)
 	{
 		TCHAR szBuf[256];
 		GetWindowText(GetDlgItem(hWnd, nId), szBuf, 256);
@@ -35,7 +35,7 @@ namespace mywin32_engine {
 		SetWindowText(GetDlgItem(hWnd, nId), szBuf);
 	}
 
-	void SetControlValueDouble(HWND hWnd, int nId, int nValue)
+	void SetControlValueDouble(HWND hWnd, int nId, double nValue)
 	{
 		TCHAR szBuf[256];
 		swprintf_s(szBuf, 256, L"%lf", nValue);
