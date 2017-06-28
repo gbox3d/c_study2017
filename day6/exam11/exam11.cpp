@@ -147,7 +147,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				mywin32_engine::SetControlValueInt(hWnd, 3004, nSum);
 				mywin32_engine::SetControlValueInt(hWnd, 3005, nSum / 3);
-				
 
 			}
 				break;
