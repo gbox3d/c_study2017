@@ -2,10 +2,11 @@
 
 https://drive.google.com/open?id=0B2SIfUvbN7xEZUd1ZG44T2dmNFE
 
-##霸烙府家胶
+##Game resource
 https://opengameart.org/
+https://www.spriters-resource.com
 
-##切积 历厘家
+##student's repository
 https://github.com/akemflem1
 
 https://github.com/KurtBestor
