@@ -137,6 +137,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
+			case 4001:
+			{
+				int nDan;
+				TCHAR szBuf[256];
+				GetWindowText(GetDlgItem(hWnd, 3001), szBuf, 256);
+				nDan = _wtoi(szBuf);
+				
+				HDC hdc = GetDC(hWnd);
+				//...while...
+				int nIndex = 1;
+				while(nIndex <= 9) {
+
+					swprintf_s(szBuf, 256, L"%d * %d = ", nDan,nIndex++);
+					TextOut(hdc, 0, nIndex * 20, szBuf, wcslen(szBuf));
+					
+				}
+
+				ReleaseDC(hWnd,hdc);
+
+			}
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
