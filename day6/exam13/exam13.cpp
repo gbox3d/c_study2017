@@ -25,7 +25,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int g_nGameLoopFSM = 1; //0 이면 랜더링준비, 1 랜더링
+int g_nGameLoopFSM = 0; //0 이면 랜더링준비, 1 랜더링
 
 int g_nPosX = 0;
 int g_nPosY = 0;
@@ -223,7 +223,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
-			
+			case ID_START_GAME:
+				g_nGameLoopFSM = 1;
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
