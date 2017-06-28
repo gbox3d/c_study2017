@@ -113,17 +113,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
 	case WM_CREATE:
 	{
-		makeMiniEditBox(hWnd, 0, 0, 3001);	 //국어	
-		makeMiniEditBox(hWnd, 105, 0, 3002); //영어
-		makeMiniEditBox(hWnd, 210, 0, 3003); //수학
+		mywin32_engine::makeMiniEditBox(hWnd, 0, 0, 3001);	 //국어	
+		mywin32_engine::makeMiniEditBox(hWnd, 105, 0, 3002); //영어
+		mywin32_engine::makeMiniEditBox(hWnd, 210, 0, 3003); //수학
+		mywin32_engine::makeMiniEditBox(hWnd, 0, 30, 3004); //합계
+		mywin32_engine::makeMiniEditBox(hWnd, 105, 30, 3005); //평균
 
-		makeSimpleButton(hWnd, L"Ok", 315, 0, 4001);
+		mywin32_engine::makeSimpleButton(hWnd, L"Ok", 315, 0, 4001);
 
 	}
 		break;
@@ -135,10 +139,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
 			case 4001:
 			{				
-				int nKorScore = GetControlValueInt(hWnd, 3001);
-				int nEngScore = GetControlValueInt(hWnd, 3002);
-				int nMatScore = GetControlValueInt(hWnd, 3003);
+				int nKorScore = mywin32_engine::GetControlValueInt(hWnd, 3001);
+				int nEngScore = mywin32_engine::GetControlValueInt(hWnd, 3002);
+				int nMatScore = mywin32_engine::GetControlValueInt(hWnd, 3003);
 
+				int nSum = nKorScore + nEngScore + nMatScore;
+
+				mywin32_engine::SetControlValueInt(hWnd, 3004, nSum);
+				mywin32_engine::SetControlValueInt(hWnd, 3005, nSum / 3);
+				
 
 			}
 				break;
