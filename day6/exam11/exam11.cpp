@@ -17,6 +17,8 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+#include "../../engine/mywin32_engine.h"
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -111,17 +113,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-#include "mywin32_engine.h"
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
 	case WM_CREATE:
 	{
-		makeMiniEditBox(hWnd, 0, 0, 3001);		
-		makeMiniEditBox(hWnd, 105, 0, 3002);
-		makeMiniEditBox(hWnd, 210, 0, 3003);
+		makeMiniEditBox(hWnd, 0, 0, 3001);	 //국어	
+		makeMiniEditBox(hWnd, 105, 0, 3002); //영어
+		makeMiniEditBox(hWnd, 210, 0, 3003); //수학
 
 		makeSimpleButton(hWnd, L"Ok", 315, 0, 4001);
 
@@ -133,6 +133,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
+			case 4001:
+			{				
+				int nKorScore = GetControlValueInt(hWnd, 3001);
+				int nEngScore = GetControlValueInt(hWnd, 3002);
+				int nMatScore = GetControlValueInt(hWnd, 3003);
+
+
+			}
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;

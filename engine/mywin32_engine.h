@@ -12,3 +12,10 @@ void makeSimpleButton(HWND hWnd, TCHAR *pszText, int nPosX, int nPosY, int nHand
 	CreateWindow(L"button", pszText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 		nPosX, nPosY, 100, 25, hWnd, (HMENU)nHandle, hInst, NULL);
 }
+
+int GetControlValueInt(HWND hWnd, int nId)
+{
+	TCHAR szBuf[256];
+	GetWindowText(GetDlgItem(hWnd, nId), szBuf, 256);
+	return _wtoi(szBuf);
+}
