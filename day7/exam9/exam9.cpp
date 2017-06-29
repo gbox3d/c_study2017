@@ -46,10 +46,30 @@ void GDIPLUS_Loop(MSG &msg)
 		Pen penRed(Color(255, 0, 0));
 		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
 		Gdiplus::SolidBrush brushWhite(Color(255, 255, 255));
+
+		Gdiplus::SolidBrush *pBrushTiles[] = {
+			&Gdiplus::SolidBrush(Color(0, 0, 0)), //빈공간 
+			&Gdiplus::SolidBrush(Color(255, 255, 0)),  //상자 
+			&Gdiplus::SolidBrush(Color(128, 128, 18)), //벽
+			&Gdiplus::SolidBrush(Color(0, 255, 0))//문
+		};
+
 		FontFamily  fontFamily(L"굴림");
 		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
 		static LONG prev_tick;
 		static SYSTEMTIME time;
+
+		//8x8
+		int bufMap[64] = {
+			2,2,2,2,2,2,2,2,
+			2,0,0,0,0,0,0,2,
+			2,0,1,0,0,0,0,2,
+			2,0,0,0,0,0,0,2,
+			3,0,0,0,0,0,0,2,
+			2,0,0,0,0,0,0,2,
+			2,0,0,0,0,0,0,2,
+			2,2,2,2,2,2,2,2
+		};
 
 		while (!quit) {
 
@@ -87,6 +107,18 @@ void GDIPLUS_Loop(MSG &msg)
 						swprintf_s(szBuf, L" %lf", fps);
 						graphBackBuffer->DrawString(szBuf, -1, &font, PointF(0, 0), &brushWhite);
 
+						graphBackBuffer->TranslateTransform(0, 50);
+						int nMapX, nMapY;
+						for (nMapY = 0; nMapY < 8; nMapY++) {
+							for (nMapX = 0; nMapX < 8; nMapX++) {
+								//swprintf_s(szBuf, L"%d", bufMap[ nMapX + nMapY*8 ] );
+								//graphBackBuffer->DrawString(szBuf, -1, &font, PointF(nMapX*12, nMapY*12), &brushWhite);
+								int nTileIndex = bufMap[nMapX + nMapY * 8];
+								graphBackBuffer->FillRectangle(&brushWhite, Rect(nMapX * 16, nMapY * 16, 16, 16));
+							}
+						}
+						graphBackBuffer->ResetTransform();
+
 						graphics.DrawImage(&bmpMem, rectScreen);
 					}
 					ReleaseDC(msg.hwnd, hdc);
@@ -105,7 +137,6 @@ void GDIPLUS_Loop(MSG &msg)
 	//gdi plus 종료코드 
 	GdiplusShutdown(gdiplusToken);
 	//--------------------------------------
-
 
 }
 
