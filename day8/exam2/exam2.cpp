@@ -15,6 +15,7 @@ int main()
 
 	printf("size :%d \n", strlen(str3));
 
+	//strcpy
 	for (int i=0;i<strlen(str3)+1;i++)
 	{
 		str4[i] = str3[i];
