@@ -167,6 +167,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
 
+			Graphics graphics(hdc);
+			graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+			//graphics.SetPageUnit(UnitPixel);
+			//graphics.SetInterpolationMode(InterpolationModeLowQuality);
+
+			//graphics.SetSmoothingMode(SmoothingModeNone);
+			
+			Image img1(L"../../res/basic_tile/basictiles.png");
+			UINT width = img1.GetWidth();
+			UINT height = img1.GetHeight();
+			
+			graphics.ScaleTransform(4, 4);
+			graphics.DrawImage(
+				&img1,
+				Rect(10, 10, 16, 16),  // destination rectangle  
+				0, 16*6,        // upper-left corner of source rectangle
+				15,       // width of source rectangle
+				16,      // height of source rectangle
+				UnitPixel);
+
+			graphics.ResetTransform();
+
+			/*
 			Image img1(L"rpgcritters2.png");
 			Graphics graphics(hdc);
 
@@ -182,6 +205,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			graphics.TranslateTransform(300, 200);
 			graphics.DrawImage(&img1, 0, 0, 48, 0, 48, 48, UnitPixel);
+			*/
 
 			//graphics.DrawImage(&img1, 0, 0,img1.GetWidth(),img1.GetHeight());
 

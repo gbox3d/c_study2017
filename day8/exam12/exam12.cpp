@@ -28,7 +28,8 @@ const int g_nTileXCount = 8;
 void drawTile(Graphics *pGrp,Image *pImgBasicTile, int nPosX, int nPosY, int nTileIndex)
 {
 	//int nTileIndex = 14;
-	pGrp->DrawImage(pImgBasicTile, nPosX, nPosY,
+	pGrp->DrawImage(pImgBasicTile, 
+		Rect(nPosX,nPosY, g_nTileSize, g_nTileSize),
 		g_nTileSize * (nTileIndex % g_nTileXCount), //원본 x 위치
 		g_nTileSize * (nTileIndex / g_nTileXCount),  //원본 y 위치
 		g_nTileSize, g_nTileSize,
@@ -36,13 +37,13 @@ void drawTile(Graphics *pGrp,Image *pImgBasicTile, int nPosX, int nPosY, int nTi
 }
 
 int g_MapRoom1[] = {
-	1, 2, 2, 2, 2, 2, 2, 3,
-	1,14,14,14,14,14,14, 3,
-	1,14,14,14,14,14,14, 3,
-	1,14,14,31,14,14,14, 3,
-	1,14,14,14,14,14,14, 3,
-	1,14,14,14,14,14,14, 3,
-	1,14,14,14,14,14,14, 3,
+	1, 2, 2, 2, 2, 2, 2, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,31,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
 	0, 0, 0, 48, 0, 0, 0, 0
 };
 
@@ -65,6 +66,8 @@ void GDIPLUS_Loop(MSG &msg)
 		Gdiplus::Rect rectScreen(0, 0, 320, 240);
 		Bitmap bmpMem(rectScreen.Width, rectScreen.Height);
 		Graphics* graphBackBuffer = Graphics::FromImage(&bmpMem);
+
+		//graphBackBuffer->SetInterpolationMode(InterpolationModeNearestNeighbor);
 
 		Pen penRed(Color(255, 0, 0));
 		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
@@ -102,23 +105,17 @@ void GDIPLUS_Loop(MSG &msg)
 					HDC hdc = GetDC(msg.hwnd);
 					{
 						Graphics graphics(hdc);
+						
 						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
 
-						/*
-						double fps = 9999;
-						if (fDelta > 0.0) {
-							fps = 1.0 / fDelta;
-						}
-						TCHAR szBuf[256];
-						swprintf_s(szBuf, L" %lf", fps);
-						graphBackBuffer->DrawString(szBuf, -1, &font, PointF(0, 0), &brushWhite);
-						*/
+						
 
 						for (int i = 0; i < 8; i++) {
 							for (int j = 0; j < 8; j++) {
 								drawTile(graphBackBuffer, &imgBasicTile, i * 16, j*16, g_MapRoom1[i + j*8]);
 							}							
-						}
+						}						
+						
 						graphics.ScaleTransform(2, 2);
 						graphics.DrawImage(&bmpMem, rectScreen);
 						graphics.ResetTransform();
