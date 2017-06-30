@@ -47,12 +47,14 @@ void GDIPLUS_Loop(MSG &msg)
 		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
 		Gdiplus::SolidBrush brushWhite(Color(255, 255, 255));
 
-		Gdiplus::SolidBrush *pBrushTiles[] = {
-			&Gdiplus::SolidBrush(Color(0, 0, 0)), //ºó°ø°£ 
-			&Gdiplus::SolidBrush(Color(255, 255, 0)),  //»óÀÚ 
-			&Gdiplus::SolidBrush(Color(128, 128, 18)), //º®
-			&Gdiplus::SolidBrush(Color(0, 255, 0))//¹®
+		Gdiplus::SolidBrush brushWell(Color(128, 128, 128));
+		Gdiplus::SolidBrush brushChest(Color(255, 255, 0));
+		Gdiplus::SolidBrush brushExit(Color(0, 255, 255));
+
+		Gdiplus::SolidBrush *paBrushTiles[5] = {
+			&brushBlack,&brushWell,&brushChest,&brushExit,&brushWhite
 		};
+
 
 		FontFamily  fontFamily(L"±¼¸²");
 		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
@@ -114,7 +116,8 @@ void GDIPLUS_Loop(MSG &msg)
 								//swprintf_s(szBuf, L"%d", bufMap[ nMapX + nMapY*8 ] );
 								//graphBackBuffer->DrawString(szBuf, -1, &font, PointF(nMapX*12, nMapY*12), &brushWhite);
 								int nTileIndex = bufMap[nMapX + nMapY * 8];
-								graphBackBuffer->FillRectangle(&brushWhite, Rect(nMapX * 16, nMapY * 16, 16, 16));
+								//graphBackBuffer->FillRectangle(&brushWhite, Rect(nMapX * 16, nMapY * 16, 16, 16));
+								graphBackBuffer->FillRectangle(paBrushTiles[nTileIndex], Rect(nMapX * 16, nMapY * 16, 16, 16));
 							}
 						}
 						graphBackBuffer->ResetTransform();
