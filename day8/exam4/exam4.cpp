@@ -133,7 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		mywin32_engine::makeSimpleButton(hWnd, L"합계", 120, 0, 4001);
 		mywin32_engine::makeMiniEditBox(hWnd, 240, 0, 3002);
 	
-	}
+	} 
 		break;
     case WM_COMMAND:
         {
@@ -141,6 +141,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
+			case 4001:
+			{
+				TCHAR szBuf[256];
+				GetWindowText(GetDlgItem(hWnd, 3001), szBuf, 256);
+
+				TCHAR szTemp[64];
+				int nTempIndex = 0;
+				int nSum = 0;
+				for (int i = 0; i <= wcslen(szBuf); i++) {
+					TCHAR ch = szBuf[i];
+
+					if (ch == L',' || ch == NULL) {
+						szTemp[nTempIndex] = NULL;
+						nTempIndex = 0;
+
+						int nNum = _wtoi(szTemp);
+						nSum += nNum;
+					}
+					else {
+						szTemp[nTempIndex++] = ch;
+					}
+				}
+				mywin32_engine::SetControlValueInt(hWnd, 3002,nSum);
+			}
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
