@@ -151,7 +151,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TCHAR *pwc;
 				pwc = wcstok(szBuf, L", #");
 				nSum += _wtoi(pwc);
-				while (pwc != NULL) {
+				while (pwc != NULL) { 
 					pwc = wcstok(NULL, L", #");
 					if (pwc != NULL) {
 						nSum += _wtoi(pwc);
