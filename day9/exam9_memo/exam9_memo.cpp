@@ -20,6 +20,7 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 #include "../../engine/mywin32_engine.h"
 TCHAR g_szMemoDB[1024];
+int g_nMemoDBTailIndex = 0;
 HWND g_hOutputLogBox;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -132,6 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 	{		
+		g_nMemoDBTailIndex = 0;
 		g_hOutputLogBox = mywin32_engine::makeTextBox(hWnd, 0, 0, 320, 240, 5001);
 	}
 		break;
@@ -216,8 +218,11 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 			int i = 0;
 			for (i = 0; szBuf[i] != 0x00; i++) {
-				g_szMemoDB[i] = szBuf[i];
+				g_szMemoDB[g_nMemoDBTailIndex + i] = szBuf[i];
 			}
+			g_szMemoDB[g_nMemoDBTailIndex + i] = L',';
+			g_nMemoDBTailIndex += (i+1);
+
 			SetWindowText(g_hOutputLogBox, g_szMemoDB);
 
 			EndDialog(hDlg, LOWORD(wParam));
