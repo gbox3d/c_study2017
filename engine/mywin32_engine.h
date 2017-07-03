@@ -17,29 +17,30 @@ namespace mywin32_engine {
 			return nCount;
 		}
 	}
-	void makeTextBox(HWND hWnd, int nPosX, int nPosY, int nWidth, int nHeight, int nHandle)
+	HANDLE makeTextBox(HWND hWnd, int nPosX, int nPosY, int nWidth, int nHeight, int nHandle)
 	{
-		CreateWindow(L"static", L"", WS_CHILD | WS_VISIBLE | WS_BORDER, 
+		
+		return CreateWindow(L"static", L"", WS_CHILD | WS_VISIBLE | WS_BORDER, 
 			nPosX, nPosY, nWidth, nHeight,
 			hWnd,
 			(HMENU)nHandle, hInst, NULL);
 	}
-	void makeMiniEditBox(HWND hWnd, int nPosX, int nPosY, int nHandle)
+	HANDLE makeMiniEditBox(HWND hWnd, int nPosX, int nPosY, int nHandle)
 	{
-		CreateWindow(L"edit", NULL,
+		return CreateWindow(L"edit", NULL,
 			WS_CHILD | WS_BORDER | WS_VISIBLE | ES_AUTOHSCROLL,
 			nPosX, nPosY, 100, 25, hWnd, (HMENU)nHandle, hInst, NULL);
 	}
-	void makeEditBox(HWND hWnd, int nPosX, int nPosY, int nWidth, int nHandle)
+	HANDLE makeEditBox(HWND hWnd, int nPosX, int nPosY, int nWidth, int nHandle)
 	{
-		CreateWindow(L"edit", NULL,
+		return CreateWindow(L"edit", NULL,
 			WS_CHILD | WS_BORDER | WS_VISIBLE | ES_AUTOHSCROLL,
 			nPosX, nPosY, nWidth, 25, hWnd, (HMENU)nHandle, hInst, NULL);
 	}
 
-	void makeSimpleButton(HWND hWnd, TCHAR *pszText, int nPosX, int nPosY, int nHandle)
+	HANDLE makeSimpleButton(HWND hWnd, TCHAR *pszText, int nPosX, int nPosY, int nHandle)
 	{
-		CreateWindow(L"button", pszText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		return CreateWindow(L"button", pszText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			nPosX, nPosY, 100, 25, hWnd, (HMENU)nHandle, hInst, NULL);
 	}
 
