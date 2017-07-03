@@ -16,6 +16,7 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 #include "../../engine/mywin32_engine.h"
 TCHAR g_szMemoDB[1024];
@@ -135,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
 			case IDM_MEMO_INS:
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_INS), hWnd, NULL);
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_INS), hWnd, procMemoIns);
 				break;
 			case IDM_MEMO_DEL:
 				break;
@@ -187,4 +188,28 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+// 메모입력 대화 상자의 메시지 처리기입니다.
+INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK )
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		else if (LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
 }
