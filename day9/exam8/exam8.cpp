@@ -12,11 +12,13 @@ int main()
 
 	//인덱스 테이블 생성
 	int nCount = 0;
-	for (int i = 0; strItems[i] != 0x00; i++) {
+	int i;
+	for (i = 0; strItems[i] != 0x00; i++) {
 		if (strItems[i] == ',') {
 			nIndexTable[nCount++] = i;
 		}
 	}
+	nIndexTable[nCount] = i;
 
 	int nIndex = 0;
 	printf("select index : ");
@@ -25,12 +27,14 @@ int main()
 	//printf("%s\n",&(strItems[nIndexTable[nIndex] ]) );
 
 	char *pTemp = &(strItems[nIndexTable[nIndex]]);
-	for (int i = 0; i < nIndexTable[nIndex + 1] - nIndexTable[nIndex]; i++) {
+	int nSize = (nIndexTable[nIndex + 1] - nIndexTable[nIndex])-1;
+	pTemp += 1;
+	
+	for (int i = 0; i < nSize; i++) {
 		printf("%c", pTemp[i]);
 	}
 
-
-
+	printf("\n");
     return 0;
 }
 
