@@ -161,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				OutputDebugString(szBuf);
 
 				double growth[32];
-
+				 
 				int nCount = 0;
 				
 				nCount = mywin32_engine::util::Buffer2DoubleArray(szBuf, growth);
