@@ -17,6 +17,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 #include "../../engine/mywin32_engine.h"
 TCHAR g_szMemoDB[1024];
@@ -145,13 +146,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
 			case IDM_MEMO_INS:
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_INS), hWnd, procMemoIns);
-
-				//SetWindowText(GetDlgItem(hWnd,5001), g_szMemoDB);
-
 				break;
 			case IDM_MEMO_DEL:
 				break;
 			case IDM_MEMO_VIEW:
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_VIEW), hWnd, procMemoView);
 				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -216,13 +215,21 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			TCHAR szBuf[256];
 			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_INS),szBuf,256);
 
+			
+			if (g_nMemoDBTailIndex > 0) {
+				g_szMemoDB[g_nMemoDBTailIndex++] = L',';
+			}
+			else {
+			}
+
 			int i = 0;
 			for (i = 0; szBuf[i] != 0x00; i++) {
-				g_szMemoDB[g_nMemoDBTailIndex + i] = szBuf[i];
+				g_szMemoDB[g_nMemoDBTailIndex++] = szBuf[i];
 			}
-			g_szMemoDB[g_nMemoDBTailIndex + i] = L',';
-			g_nMemoDBTailIndex += (i+1);
+			//g_szMemoDB[g_nMemoDBTailIndex + i] = L',';
+			//g_nMemoDBTailIndex += (i+1);
 
+			 
 			SetWindowText(g_hOutputLogBox, g_szMemoDB);
 
 			EndDialog(hDlg, LOWORD(wParam));
@@ -236,3 +243,52 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	}
 	return (INT_PTR)FALSE;
 }
+
+// 데이터 보기 대화 상자의 메시지 처리기입니다.
+INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK )
+		{
+			TCHAR szBuf[256];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_SEL_INDEX), szBuf, 256);
+			int nSel = _wtoi(szBuf);
+
+			int nCount = 0;
+			int i = 0;
+			while (g_szMemoDB[i] != 0x00) {
+				if (g_szMemoDB[i] == L',') {
+					nCount++;
+				}
+				if (nCount == nSel) break;
+				i++;
+			}
+
+			int j = 0;
+			i++;
+			while (g_szMemoDB[i] != 0x00 && g_szMemoDB[i] != L',')
+			{	
+				szBuf[j++] = g_szMemoDB[i++];
+			}
+			szBuf[j] = 0x00;
+
+			SetWindowText(g_hOutputLogBox, szBuf);
+
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		else if( LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
