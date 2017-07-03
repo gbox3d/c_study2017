@@ -17,7 +17,13 @@ namespace mywin32_engine {
 			return nCount;
 		}
 	}
-
+	void makeTextBox(HWND hWnd, int nPosX, int nPosY, int nWidth, int nHeight, int nHandle)
+	{
+		CreateWindow(L"static", L"", WS_CHILD | WS_VISIBLE | WS_BORDER, 
+			nPosX, nPosY, nWidth, nHeight,
+			hWnd,
+			(HMENU)nHandle, hInst, NULL);
+	}
 	void makeMiniEditBox(HWND hWnd, int nPosX, int nPosY, int nHandle)
 	{
 		CreateWindow(L"edit", NULL,

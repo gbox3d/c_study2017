@@ -129,6 +129,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_CREATE:
+	{		
+		mywin32_engine::makeTextBox(hWnd, 0, 0, 320, 240, 5001);
+	}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -202,6 +207,9 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK )
 		{
+			TCHAR szBuf[256];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_INS),szBuf,256);
+
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
