@@ -259,19 +259,22 @@ INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			TCHAR szBuf[256];
 			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_SEL_INDEX), szBuf, 256);
 			int nSel = _wtoi(szBuf);
-
-			int nCount = 0;
 			int i = 0;
-			while (g_szMemoDB[i] != 0x00) {
-				if (g_szMemoDB[i] == L',') {
-					nCount++;
+
+			if (nSel > 0) {
+				int nCount = 0;
+				
+				while (g_szMemoDB[i] != 0x00) {
+					if (g_szMemoDB[i] == L',') {
+						nCount++;
+					}
+					if (nCount == nSel) break;
+					i++;
 				}
-				if (nCount == nSel) break;
 				i++;
 			}
 
 			int j = 0;
-			i++;
 			while (g_szMemoDB[i] != 0x00 && g_szMemoDB[i] != L',')
 			{	
 				szBuf[j++] = g_szMemoDB[i++];
