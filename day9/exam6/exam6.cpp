@@ -1,8 +1,8 @@
-// exam12.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// exam6.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam12.h"
+#include "exam6.h"
 
 #define MAX_LOADSTRING 100
 
@@ -17,127 +17,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-#include <windows.h>
-#include <objidl.h>
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
-
-const int g_nTileSize = 16;
-const int g_nTileXCount = 8;
-void drawTile(Graphics *pGrp,Image *pImgBasicTile, int nPosX, int nPosY, int nTileIndex)
-{
-	//int nTileIndex = 14;
-	pGrp->DrawImage(pImgBasicTile, 
-		Rect(nPosX,nPosY, g_nTileSize, g_nTileSize),
-		g_nTileSize * (nTileIndex % g_nTileXCount), //원본 x 위치
-		g_nTileSize * (nTileIndex / g_nTileXCount),  //원본 y 위치
-		g_nTileSize, g_nTileSize,
-		UnitPixel);
-}
-
-int g_MapRoom1[] = {
-	3, 0, 0, 0, 0, 0, 0, 3,
-	1,14,14,14,14,14,14, 1,
-	1,14,14,14,14,14,14, 1,
-	1,14,14,31,14,14,14, 1,
-	1,14,14,14,14,14,14, 1,
-	1,14,14,14,14,14,14, 1,
-	1,14,14,14,14,14,14, 1,
-	2, 2, 2, 48, 2, 2, 2, 2
-};
-
-
-DWORD g_dwGdiLoopFsm = 0; //루프상태제어
-void GDIPLUS_Loop(MSG &msg)
-{
-	//----------------------------------------------------------------------
-	//gdi plus 초기화 코드 
-	GdiplusStartupInput gdiplusStartupInput;
-	ULONG_PTR           gdiplusToken;
-
-	// Initialize GDI+.
-	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-	//-----------------------------------------------------------------------
-
-	{
-		bool quit = false;
-		//gdiplus 가 셧다운 되기전에 객체들이 삭제되어야 하므로 일부러 지역변수선언을 한단계 내려서 사용했다.
-		Gdiplus::Rect rectScreen(0, 0, 320, 240);
-		Bitmap bmpMem(rectScreen.Width, rectScreen.Height);
-		Graphics* graphBackBuffer = Graphics::FromImage(&bmpMem);
-
-		//graphBackBuffer->SetInterpolationMode(InterpolationModeNearestNeighbor);
-
-		Pen penRed(Color(255, 0, 0));
-		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
-		Gdiplus::SolidBrush brushWhite(Color(255, 255, 255));
-		FontFamily  fontFamily(L"굴림");
-		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
-		static LONG prev_tick;
-		static SYSTEMTIME time;
-
-		
-		Image imgBasicTile(L"../../res/basic_tile/basictiles.png");
-
-		while (!quit) {
-
-			if (PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE))
-			{
-				if (msg.message == WM_QUIT)
-					quit = true;
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-			else {
-				switch (g_dwGdiLoopFsm)
-				{
-				case 0:
-					break;
-				case 10:
-				{
-					GetSystemTime(&time);
-					LONG time_ms = (time.wSecond * 1000) + time.wMilliseconds;
-					float fDelta = (time_ms - prev_tick) / 1000.f;
-					prev_tick = time_ms;
-
-					// Get DC
-					HDC hdc = GetDC(msg.hwnd);
-					{
-						Graphics graphics(hdc);
-						
-						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
-
-						
-
-						for (int i = 0; i < 8; i++) {
-							for (int j = 0; j < 8; j++) {
-								drawTile(graphBackBuffer, &imgBasicTile, i * 16, j*16, g_MapRoom1[i + j*8]);
-							}							
-						}						
-						
-						graphics.ScaleTransform(2, 2);
-						graphics.DrawImage(&bmpMem, rectScreen);
-						graphics.ResetTransform();
-					}
-					ReleaseDC(msg.hwnd, hdc);
-				}
-				break;
-				default:
-					break;
-				}
-
-
-			}
-		}
-	}
-
-	//--------------------------------------
-	//gdi plus 종료코드 
-	GdiplusShutdown(gdiplusToken);
-	//--------------------------------------
-
-}
+#include "../../engine/mywin32_engine.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -151,7 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM12, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_EXAM6, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -160,12 +40,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM12));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM6));
 
     MSG msg;
 
     // 기본 메시지 루프입니다.
-	GDIPLUS_Loop(msg);
+    while (GetMessage(&msg, nullptr, 0, 0))
+    {
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
 
     return (int) msg.wParam;
 }
@@ -188,10 +75,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM12));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM6));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM12);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM6);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -236,18 +123,58 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+
+int extra_growth(double *gp, double avg, int nCount)
+{
+	int nExtCount = 0;
+	for (int i = 0; i < nCount; i++) {
+		if (avg < gp[i]) {
+			nExtCount++;
+		}
+	}
+
+	return nExtCount;
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_CREATE:
+	{
+		mywin32_engine::makeEditBox(hWnd, 0, 0, 200 ,3001); //경재성장률 입력 
+
+		mywin32_engine::makeMiniEditBox(hWnd, 0, 24, 3002); //평균
+		mywin32_engine::makeMiniEditBox(hWnd, 0, 24*2, 3003); //평균 초과 횟수
+	}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
-            {
-			case IDM_START:
-				g_dwGdiLoopFsm = 10;
+            {			
+			case IDM_RUN:
+			{
+				TCHAR szBuf[256];
+				GetWindowText(GetDlgItem(hWnd, 3001), szBuf, 256);
+				OutputDebugString(szBuf);
+
+				double growth[32];
+
+				int nCount = 0;
+				
+				nCount = mywin32_engine::util::Buffer2DoubleArray(szBuf, growth);
+
+				double lfSum = 0;
+				for (int i = 0; i < nCount; i++) {
+					lfSum += growth[i];
+				}
+				//SetWindowText(GetDlgItem(hWnd,3002),)
+				mywin32_engine::SetControlValueDouble(hWnd,3002,lfSum /nCount );
+				mywin32_engine::SetControlValueInt(hWnd, 3003, extra_growth(growth, lfSum / nCount, nCount));
+
+			}
 				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
