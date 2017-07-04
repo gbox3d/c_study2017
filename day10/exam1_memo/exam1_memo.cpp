@@ -126,6 +126,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+TCHAR g_szBufferDB[1024];
+int g_nTailIndex = 0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -139,9 +142,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case IDM_MEMO_INS:
 			{
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_INSERT), hWnd, procMemoIns);
-
 			}
 				break;
+			case IDM_MEMO_DEL:
+			{
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_INSERT), hWnd, procMemoDel);
+
+			}
+			break;
+			case IDM_MEMO_VIEW:
+			{
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_INSERT), hWnd, procMemoView);
+			}
+			break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -201,10 +214,24 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		if (LOWORD(wParam) == IDOK )
 		{
+			TCHAR szBuf[256];
+			TCHAR *ptrStartAt = &(g_szBufferDB[g_nTailIndex]);
+
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_INS), szBuf, 256);
+
+			TCHAR *ptrSrc = szBuf;
+
+		//	while()
+			
+
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
+		}
+		else if(LOWORD(wParam) == IDCANCEL){
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
 		}
 		break;
 	}
