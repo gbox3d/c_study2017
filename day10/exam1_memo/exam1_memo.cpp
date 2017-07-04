@@ -126,8 +126,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-TCHAR g_szBufferDB[1024];
+TCHAR g_szBufferDB[1024]= L"helloworldgoodmorning";
 int g_nTailIndex = 0;
+int g_nTableStartIndex[256] = {0,5,10,14};
+int g_nTableLength[256] = {5,5,4,7};
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -146,13 +148,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			case IDM_MEMO_DEL:
 			{
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_INSERT), hWnd, procMemoDel);
-
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DEL), hWnd, procMemoDel);
 			}
 			break;
 			case IDM_MEMO_VIEW:
 			{
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_INSERT), hWnd, procMemoView);
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_VIEW), hWnd, procMemoView);
 			}
 			break;
             case IDM_ABOUT:
@@ -271,10 +272,28 @@ INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		if (LOWORD(wParam) == IDOK )
 		{
+			TCHAR szBuf[256];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_SEL), szBuf, 256);
+			int nSel = _wtoi(szBuf);
+
+			int nStartPos = g_nTableStartIndex[nSel];
+			int nLength = g_nTableLength[nSel];
+
+			int i = 0;
+			for (i = 0; i < nLength; i++) {
+				szBuf[i] = g_szBufferDB[nStartPos + i];
+			}
+
+
+
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
+		}
+		else if (LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
 		}
 		break;
 	}
