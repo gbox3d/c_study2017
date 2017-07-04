@@ -22,6 +22,8 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 INT_PTR CALLBACK procMemoDel(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
+#include "../../engine/mywin32_engine.h"
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -132,10 +134,18 @@ int g_nTableStartIndex[256] = {0,5,10,14};
 int g_nTableLength[256] = {5,5,4,7};
 int g_nStringCount = 4;
 
+HWND g_hLogText;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_CREATE:
+	{
+		g_hLogText = mywin32_engine::makeTextBox(hWnd, 0, 0, 320, 240,-1);
+
+	}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -157,6 +167,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_VIEW), hWnd, procMemoView);
 			}
 			break;
+			case IDM_DUMP:
+			{
+				TCHAR szBuf[256];
+				int nBufIndex = 0;
+				for (int i=0; i < g_nStringCount; i++) {
+					int nStartIndex = g_nTableStartIndex[i];
+					int nLength = g_nTableLength[i];
+
+					for (int j = 0; j < nLength; j++) {
+						szBuf[nBufIndex++] = g_szBufferDB[nStartIndex + j];
+					}
+					szBuf[nBufIndex++] = L'\n';
+				}
+				szBuf[nBufIndex++] = L'\0';
+
+				SetWindowText(g_hLogText, szBuf);
+
+			}
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -237,7 +266,6 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			g_nTailIndex += wcslen(szBuf);
 			g_nStringCount++;
 
-
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
@@ -297,6 +325,9 @@ INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			}
 
 			*pTar = 0x00;
+
+			SetWindowText(g_hLogText, szBuf);
+
 
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
