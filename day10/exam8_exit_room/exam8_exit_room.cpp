@@ -25,6 +25,27 @@ using namespace Gdiplus;
 
 #include "../../engine/mygdiplus_game.h"
 
+/*
+y=1
+x=1
+
+y*8 + x => 9
+*/
+
+int g_MapRoom1[] = {
+	3, 0, 0, 0, 0, 0, 0, 3,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	2, 2, 2, 2, 2, 2, 2, 2
+};
+
+int g_nPlayerXpos = 3;
+int g_nPlayerYpos = 3;
+
 DWORD g_dwGdiLoopFsm = 0; //루프상태제어
 void GDIPLUS_Loop(MSG &msg)
 {
@@ -51,6 +72,9 @@ void GDIPLUS_Loop(MSG &msg)
 		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
 		static LONG prev_tick;
 		static SYSTEMTIME time;
+
+		Image imgBasicTile(L"../../res/basic_tile/basictiles.png"); // 16x16
+		Image imgPlayer(L"../../res/potrait/Pepper publish.png");// 24 x 32
 
 		while (!quit) {
 
@@ -79,14 +103,22 @@ void GDIPLUS_Loop(MSG &msg)
 						Graphics graphics(hdc);
 						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
 
-						double fps = 9999;
-						if (fDelta > 0.0) {
-							fps = 1.0 / fDelta;
+						//지도 그리기 
+						for (int ix = 0; ix < 8; ix++) {
+							for (int iy = 0; iy < 8; iy++) {
+								myGdiplusGame::drawTile(graphBackBuffer, 
+									&imgBasicTile, 
+									ix, iy, g_MapRoom1);
+							}
 						}
-
-						TCHAR szBuf[256];
-						swprintf_s(szBuf, L" %lf", fps);
-						graphBackBuffer->DrawString(szBuf, -1, &font, PointF(0, 0), &brushWhite);
+						
+						graphBackBuffer->DrawImage(&imgPlayer,
+							Rect(100, 100, 24, 32), //대상위치 
+							0, 0, 24, 32, //원본위치 
+							UnitPixel
+						);
+						
+						
 
 						graphics.DrawImage(&bmpMem, rectScreen);
 					}
