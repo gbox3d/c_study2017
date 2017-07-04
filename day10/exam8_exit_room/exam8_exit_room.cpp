@@ -74,7 +74,8 @@ void GDIPLUS_Loop(MSG &msg)
 		static SYSTEMTIME time;
 
 		Image imgBasicTile(L"../../res/basic_tile/basictiles.png"); // 16x16
-		Image imgPlayer(L"../../res/potrait/Pepper publish.png");// 24 x 32
+		//Image imgPlayer(L"../../res/potrait/Pepper publish.png");// 24 x 32
+		Image imgPlayer(L"../../res/charater.png");// 64 x 64
 
 		while (!quit) {
 
@@ -113,14 +114,14 @@ void GDIPLUS_Loop(MSG &msg)
 						}
 						
 						graphBackBuffer->DrawImage(&imgPlayer,
-							Rect(100, 100, 24, 32), //대상위치 
-							0, 0, 24, 32, //원본위치 
+							Rect((g_nPlayerXpos * 16) - 8  , (g_nPlayerYpos *16) - 8, 32, 32), //대상위치 
+							0, 64*2, 64, 64, //원본위치 
 							UnitPixel
 						);
-						
-						
 
+						graphics.ScaleTransform(2.0, 2.0);
 						graphics.DrawImage(&bmpMem, rectScreen);
+						graphics.ResetTransform();
 					}
 					ReleaseDC(msg.hwnd, hdc);
 				}
@@ -217,6 +218,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_UP:
+			g_nPlayerYpos--;
+			break;
+		case VK_DOWN:
+			g_nPlayerYpos++;
+			break;
+		case VK_LEFT:
+			g_nPlayerXpos--;
+			break;
+		case VK_RIGHT:
+			g_nPlayerXpos++;
+			break;
+		default:
+			break;
+		}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
