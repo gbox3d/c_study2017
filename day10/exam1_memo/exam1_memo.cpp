@@ -127,9 +127,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 TCHAR g_szBufferDB[1024]= L"helloworldgoodmorning";
-int g_nTailIndex = 0;
+int g_nTailIndex = 21;
 int g_nTableStartIndex[256] = {0,5,10,14};
 int g_nTableLength[256] = {5,5,4,7};
+int g_nStringCount = 4;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -219,7 +220,7 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		{
 			TCHAR szBuf[256];
 			TCHAR *ptrStartAt = &(g_szBufferDB[g_nTailIndex]);
-
+			
 			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_INS), szBuf, 256);
 
 			TCHAR *ptrSrc = szBuf;		
@@ -230,7 +231,12 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				ptrStartAt++;
 			}
 
+			g_nTableStartIndex[g_nStringCount] = g_nTailIndex;
+			g_nTableLength[g_nStringCount] = wcslen(szBuf);
+
 			g_nTailIndex += wcslen(szBuf);
+			g_nStringCount++;
+
 
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
@@ -281,12 +287,16 @@ INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			int nStartPos = g_nTableStartIndex[nSel];
 			int nLength = g_nTableLength[nSel];
 
+			TCHAR *pTar = szBuf;
+			TCHAR *pSrc = &g_szBufferDB[nStartPos];
+						
 			int i = 0;
 			for (i = 0; i < nLength; i++) {
-				szBuf[i] = g_szBufferDB[nStartPos + i];
+				//szBuf[i] = g_szBufferDB[nStartPos + i];
+				*(pTar++) = *(pSrc++);
 			}
 
-
+			*pTar = 0x00;
 
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
