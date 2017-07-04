@@ -63,12 +63,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
-
-//
-//  함수: MyRegisterClass()
-//
-//  목적: 창 클래스를 등록합니다.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -90,16 +84,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
-//   함수: InitInstance(HINSTANCE, int)
-//
-//   목적: 인스턴스 핸들을 저장하고 주 창을 만듭니다.
-//
-//   설명:
-//
-//        이 함수를 통해 인스턴스 핸들을 전역 변수에 저장하고
-//        주 프로그램 창을 만든 다음 표시합니다.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
@@ -118,16 +102,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
-//  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  목적:  주 창의 메시지를 처리합니다.
-//
-//  WM_COMMAND  - 응용 프로그램 메뉴를 처리합니다.
-//  WM_PAINT    - 주 창을 그립니다.
-//  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
-//
-//
 TCHAR g_szBufferDB[1024]= L"helloworldgoodmorning";
 int g_nTailIndex = 21;
 int g_nTableStartIndex[256] = {0,5,10,14};
@@ -175,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					int nStartIndex = g_nTableStartIndex[i];
 					int nLength = g_nTableLength[i];
 
-					for (int j = 0; j < nLength; j++) {
+					for (int j = 0; j < nLength; j++)  {
 						szBuf[nBufIndex++] = g_szBufferDB[nStartIndex + j];
 					}
 					szBuf[nBufIndex++] = L'\n';
@@ -234,8 +208,6 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-
-
 INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
@@ -247,22 +219,24 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK )
 		{
-			TCHAR szBuf[256];
-			TCHAR *ptrStartAt = &(g_szBufferDB[g_nTailIndex]);
-			
+			//입력 문자열 얻기
+			TCHAR szBuf[256];			
 			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_INS), szBuf, 256);
 
+			/*
 			TCHAR *ptrSrc = szBuf;		
-
+			TCHAR *ptrStartAt = &(g_szBufferDB[g_nTailIndex]);
 			while (*ptrSrc != 0x00) {
 				*ptrStartAt = *ptrSrc;
 				ptrSrc++;
 				ptrStartAt++;
-			}
+			}			
+			*/
+
+			wcscat(g_szBufferDB, szBuf);
 
 			g_nTableStartIndex[g_nStringCount] = g_nTailIndex;
 			g_nTableLength[g_nStringCount] = wcslen(szBuf);
-
 			g_nTailIndex += wcslen(szBuf);
 			g_nStringCount++;
 
@@ -287,10 +261,29 @@ INT_PTR CALLBACK procMemoDel(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		if (LOWORD(wParam) == IDOK)
 		{
+			TCHAR szBuf[256];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_DEL), szBuf, 256);
+			int nSel = _wtoi(szBuf);
+
+			g_nStringCount--;
+
+			//g_nTailIndex -= g_nTableLength[nSel];
+
+			for (int i = nSel; i < g_nStringCount; i++) {
+				g_nTableStartIndex[i] = g_nTableStartIndex[i + 1];
+			}
+			for (int i = nSel; i < g_nStringCount; i++) {
+				g_nTableLength[i] = g_nTableLength[i + 1];
+			}
+
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
+		}
+		else if (LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
 		}
 		break;
 	}
