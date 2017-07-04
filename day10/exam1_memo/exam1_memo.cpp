@@ -221,10 +221,15 @@ INT_PTR CALLBACK procMemoIns(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_INS), szBuf, 256);
 
-			TCHAR *ptrSrc = szBuf;
+			TCHAR *ptrSrc = szBuf;		
 
-		//	while()
-			
+			while (*ptrSrc != 0x00) {
+				*ptrStartAt = *ptrSrc;
+				ptrSrc++;
+				ptrStartAt++;
+			}
+
+			g_nTailIndex += wcslen(szBuf);
 
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
