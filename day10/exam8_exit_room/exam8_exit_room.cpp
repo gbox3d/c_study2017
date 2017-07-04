@@ -23,6 +23,8 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
+#include "../../engine/mygdiplus_game.h"
+
 DWORD g_dwGdiLoopFsm = 0; //루프상태제어
 void GDIPLUS_Loop(MSG &msg)
 {
