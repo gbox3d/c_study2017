@@ -261,25 +261,36 @@ INT_PTR CALLBACK procMemoView(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			int nSel = _wtoi(szBuf);
 			int i = 0;
 
+			TCHAR *ptrStart = g_szMemoDB;
+
 			if (nSel > 0) {
 				int nCount = 0;
 				
-				while (g_szMemoDB[i] != 0x00) {
-					if (g_szMemoDB[i] == L',') {
+				//while (g_szMemoDB[i] != 0x00) {
+				while (*ptrStart != 0x00) {
+					if (*ptrStart == L',') {
 						nCount++;
 					}
-					if (nCount == nSel) break;
-					i++;
+					ptrStart++;
+					if (nCount == nSel) {
+						break;
+					}					
 				}
-				i++;
+				
 			}
 
-			int j = 0;
-			while (g_szMemoDB[i] != 0x00 && g_szMemoDB[i] != L',')
+			TCHAR *ptrTarget = szBuf;
+			TCHAR *ptrSource = ptrStart; //시작위치 복사 
+			while (*ptrSource != 0x00 && *ptrSource != L',')
 			{	
-				szBuf[j++] = g_szMemoDB[i++];
+				//szBuf[j++] = g_szMemoDB[i++];
+				*ptrTarget = *ptrSource;
+				ptrTarget++;
+				ptrSource++;
+
 			}
-			szBuf[j] = 0x00;
+			*ptrTarget = 0x00;
+			//szBuf[j] = 0x00;
 
 			SetWindowText(g_hOutputLogBox, szBuf);
 
