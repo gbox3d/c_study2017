@@ -43,6 +43,19 @@ int g_MapRoom1[] = {
 	2, 2, 2, 2, 2, 2, 2, 2
 };
 
+int g_MapAttrBlock[] = {
+	1, 1, 1, 1, 1, 1, 1, 1,
+	1,0,0,0,0,0,0, 1,
+	1,0,0,0,0,0,0, 1,
+	1,0,0,0,0,0,0, 1,
+	1,0,0,0,0,0,0, 1,
+	1,0,0,0,0,0,0, 1,
+	1,0,0,0,0,0,0, 1,
+	1, 1, 1, 1, 1, 1, 1, 1
+
+};
+
+
 int g_nPlayerXpos = 3;
 int g_nPlayerYpos = 3;
 
@@ -114,7 +127,7 @@ void GDIPLUS_Loop(MSG &msg)
 						}
 						
 						graphBackBuffer->DrawImage(&imgPlayer,
-							Rect((g_nPlayerXpos * 16) - 8  , (g_nPlayerYpos *16) - 8, 32, 32), //대상위치 
+							Rect((g_nPlayerXpos * 16) - 8  , (g_nPlayerYpos *16) - 16, 32, 32), //대상위치 
 							0, 64*2, 64, 64, //원본위치 
 							UnitPixel
 						);
@@ -214,6 +227,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+#include "../../engine/mywin32_engine.h"
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -222,7 +237,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_UP:
-			g_nPlayerYpos--;
+
+			if (g_MapAttrBlock[ (g_nPlayerYpos-1) * 8 + g_nPlayerXpos] == 1) {
+
+			}
+			else {
+				g_nPlayerYpos--;
+			}
+			
 			break;
 		case VK_DOWN:
 			g_nPlayerYpos++;
@@ -246,6 +268,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case IDM_START:
 			{
 				g_dwGdiLoopFsm = 10;
+			}
+				break;
+			case IDM_GET_TILE:
+			{
+				mywin32_engine::util::OutputDebugformat(L"xpos :%d, ypos: %d, tile: %d \n", 
+					g_nPlayerXpos,
+					g_nPlayerYpos,
+					g_MapAttrBlock[g_nPlayerXpos + g_nPlayerYpos * 8] );
+
 			}
 				break;
             case IDM_ABOUT:

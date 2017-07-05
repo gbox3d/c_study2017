@@ -16,6 +16,14 @@ namespace mywin32_engine {
 
 			return nCount;
 		}
+		void OutputDebugformat(TCHAR *fmt, ...) {
+			TCHAR szBuf[256];
+			va_list ap;
+			va_start(ap, fmt);			
+			vswprintf_s(szBuf, 256, fmt, ap);
+			OutputDebugString(szBuf);
+			va_end(ap);
+		}
 	}
 	HWND makeTextBox(HWND hWnd, int nPosX, int nPosY, int nWidth, int nHeight, int nHandle)
 	{
