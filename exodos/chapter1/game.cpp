@@ -14,7 +14,7 @@ int g_MapRoom1[] = {
 	1,14,14,14,14,14,14, 1,
 	1,14,14,14,14,14,14, 1,
 	1,14,14,14,14,14,14, 1,
-	2, 2, 2, 2, 2, 2, 2, 2
+	2, 2, 48, 2, 2, 2, 2, 2
 };
 
 int g_MapAttrBlock[] = {
@@ -32,12 +32,50 @@ int g_MapAttrBlock[] = {
 int g_nPlayerXpos = 3;
 int g_nPlayerYpos = 3;
 
+//문열림 스위치 오브잭트 
+int g_nItemSwitchXpos = 5;
+int g_nItemSwitchYpos = 3;
+int g_nItemSwitchSprIndex = 47;
+
 const int g_nTileSize = 16;
 const int g_nTileXCount = 8;
 
-void drawTile(Graphics *pGrp, Image *pImgBasicTile, int nPosX, int nPosY, int *pMap)
+int getMapBlockAttr(int mx, int my)
 {
-	int nTileIndex = pMap[nPosX + nPosY*g_nTileXCount];
+	return g_MapAttrBlock[my * 8 + mx];
+}
+
+void eventKeyDown(WPARAM wParam)
+{
+	int savePosx = g_nPlayerXpos;
+	int savePosy = g_nPlayerYpos;
+	switch (wParam)
+	{
+	case VK_UP:
+		g_nPlayerYpos--;
+		break;
+	case VK_DOWN:
+		g_nPlayerYpos++;
+		break;
+	case VK_LEFT:
+		g_nPlayerXpos--;
+		break;
+	case VK_RIGHT:
+		g_nPlayerXpos++;
+		break;
+	default:
+		break;
+	}
+	if (getMapBlockAttr(g_nPlayerXpos, g_nPlayerYpos) == 1) {
+		g_nPlayerXpos = savePosx;
+		g_nPlayerYpos = savePosy;
+	}
+
+}
+
+void drawTileIndex(Graphics *pGrp, Image *pImgBasicTile, int nPosX, int nPosY, int nTileIndex)
+{
+	//int nTileIndex = pMap[nPosX + nPosY*g_nTileXCount];
 
 	pGrp->DrawImage(pImgBasicTile,
 		Rect(nPosX * 16, nPosY * 16, g_nTileSize, g_nTileSize),
@@ -46,6 +84,13 @@ void drawTile(Graphics *pGrp, Image *pImgBasicTile, int nPosX, int nPosY, int *p
 		g_nTileSize, g_nTileSize,
 		UnitPixel);
 }
+
+void drawTile(Graphics *pGrp, Image *pImgBasicTile, int nPosX, int nPosY, int *pMap)
+{
+	int nTileIndex = pMap[nPosX + nPosY*g_nTileXCount];
+	drawTileIndex(pGrp, pImgBasicTile, nPosX, nPosY, nTileIndex);
+}
+
 
 DWORD g_dwGdiLoopFsm = 0; //루프상태제어
 void GDIPLUS_Loop(MSG &msg)
@@ -119,6 +164,10 @@ void GDIPLUS_Loop(MSG &msg)
 							0, 64 * 2, 64, 64, //원본위치 
 							UnitPixel
 						);
+						
+						//각종 아이템 ,트리거, 기구물 그리기 
+						drawTileIndex(graphBackBuffer, &imgBasicTile, g_nItemSwitchXpos, g_nItemSwitchYpos, 47);
+
 
 						graphics.ScaleTransform(2.0, 2.0);
 						graphics.DrawImage(&bmpMem, rectScreen);
