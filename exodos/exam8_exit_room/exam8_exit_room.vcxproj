@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{CDD261E0-0EFA-422E-B46B-DB2FA45FA5CD}</ProjectGuid>
+    <ProjectGuid>{755D29D4-AC0A-4C27-9982-6C24FA731B4A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>exam2</RootNamespace>
+    <RootNamespace>exam8_exit_room</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -138,18 +138,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="exam2.h" />
+    <ClInclude Include="exam8_exit_room.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\engine\utils.cpp" />
-    <ClCompile Include="1.cpp" />
-    <ClCompile Include="2.cpp" />
-    <ClCompile Include="3.cpp" />
-    <ClCompile Include="4.cpp" />
-    <ClCompile Include="exam2.cpp" />
+    <ClCompile Include="exam8_exit_room.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -158,10 +153,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="exam2.rc" />
+    <ResourceCompile Include="exam8_exit_room.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="exam2.ico" />
+    <Image Include="exam8_exit_room.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
