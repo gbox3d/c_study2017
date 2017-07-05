@@ -41,6 +41,9 @@
     <ClCompile Include="1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="exam1.rc">
