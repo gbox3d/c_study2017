@@ -36,6 +36,7 @@ int g_nPlayerYpos = 3;
 int g_nItemSwitchXpos = 5;
 int g_nItemSwitchYpos = 3;
 int g_nItemSwitchSprIndex = 47;
+int g_nItemSwitchStatus = 0; //0:스위치 멈춤, 1: 스위치 작동
 
 const int g_nTileSize = 16;
 const int g_nTileXCount = 8;
@@ -144,7 +145,21 @@ void GDIPLUS_Loop(MSG &msg)
 					float fDelta = (time_ms - prev_tick) / 1000.f;
 					prev_tick = time_ms;
 
-					// Get DC
+					//게임 로직 
+					{
+						//위치가 스위치에 있는지 검사
+						if (g_nItemSwitchStatus == 0) {
+							if (g_nItemSwitchXpos == g_nPlayerXpos &&
+								g_nItemSwitchYpos == g_nPlayerYpos
+								) {
+								g_nItemSwitchStatus = 1;
+								g_MapAttrBlock[8 * 7 + 2] = 0; //(7,2) 위치 막힘 제거 
+							}
+						}
+
+					}
+
+					//랜더링 
 					HDC hdc = GetDC(msg.hwnd);
 					{
 						Graphics graphics(hdc);
@@ -166,7 +181,13 @@ void GDIPLUS_Loop(MSG &msg)
 						);
 						
 						//각종 아이템 ,트리거, 기구물 그리기 
-						drawTileIndex(graphBackBuffer, &imgBasicTile, g_nItemSwitchXpos, g_nItemSwitchYpos, 47);
+						if (g_nItemSwitchStatus == 0) {
+							drawTileIndex(graphBackBuffer, &imgBasicTile, g_nItemSwitchXpos, g_nItemSwitchYpos, 47);
+						}
+						else {
+							//
+						}
+						
 
 
 						graphics.ScaleTransform(2.0, 2.0);
