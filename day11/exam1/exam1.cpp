@@ -123,6 +123,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 
 extern void test1(HWND hWnd);
+extern void test2(HWND hWnd);
 extern void DisplayLog(HDC hdc);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -139,6 +140,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
 			case IDM_TEST_1:
 				test1(hWnd);
+				break;
+			case IDM_TEST_2:
+				test2(hWnd);
 				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
