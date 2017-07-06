@@ -125,6 +125,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 TCHAR g_szInputBuffer[256];
+void procTest2(HWND hWnd);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -137,12 +138,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
 			case IDM_EXAM_1:
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_INPUT_TEXT), hWnd, procInputText);
-
 				int nNum1, nNum2;
 				TCHAR szBuf[256];
 				win32_Scanf(g_szInputBuffer,L"%d %d %s",&nNum1,&nNum2,szBuf);
 				win32_Printf(hWnd, L"%d %s",nNum1+nNum2,szBuf);				
-
+				break;
+			case IDM_EXAM_2:
+				procTest2(hWnd);
 				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
