@@ -53,9 +53,9 @@ int g_MapAttrBlock[][64] = {
 };
 
 //캐릭터 리젠위치,열림스위치위치,탈출구 위치
-int g_StageInfo[][6] = {	
-	{3,3,5,3,7,2},
-	{1,1,5,3,7,5}
+int g_StageInfo[][7] = {	
+	{3,3,5,3,7,2,31},
+	{1,1,5,3,7,5,47}
 };
 
 int g_nCurrentStage;
@@ -65,9 +65,14 @@ int g_nPlayerYpos;
 //문열림 스위치 오브잭트 
 int g_nItemSwitchXpos = 5;
 int g_nItemSwitchYpos = 3;
-int g_nExitPosX, g_nExitPosY;
-int g_nItemSwitchSprIndex = 47;
+int g_nItemSwitchSprIndex;
 int g_nItemSwitchStatus = 0; //0:스위치 멈춤, 1: 스위치 작동
+
+
+//탈출구 오브잭트
+int g_nExitPosX, g_nExitPosY;
+int g_nExitStatus = 0; //0:대기 1:닫기 2:열기 
+
 
 const int g_nTileSize = 16;
 const int g_nTileXCount = 8;
@@ -80,12 +85,16 @@ void StartStage(int nStage)
 	g_nPlayerXpos = g_StageInfo[nStage][0];
 	g_nPlayerYpos = g_StageInfo[nStage][1];
 
+	//스위치
 	g_nItemSwitchXpos = g_StageInfo[nStage][2];
 	g_nItemSwitchYpos = g_StageInfo[nStage][3];
+	g_nItemSwitchSprIndex = g_StageInfo[nStage][6];
 	g_nItemSwitchStatus = 0; //비활성 상태 
 
+	//탈출구
 	g_nExitPosX = g_StageInfo[nStage][4];
-	g_nExitPosY = g_StageInfo[nStage][5];
+	g_nExitPosY = g_StageInfo[nStage][5];	
+	g_nExitStatus = 1;
 }
 
 void StartGame()
@@ -96,9 +105,16 @@ void StartGame()
 	g_dwGdiLoopFsm = 10; //랜더링 활성화 	
 }
 
-int getMapBlockAttr(int mx, int my)
+int getMapTile(int (*pMap)[64],int mx, int my)
 {
-	return g_MapAttrBlock[g_nCurrentStage][my * 8 + mx];
+	return pMap[g_nCurrentStage][my * 8 + mx];
+}
+
+int setMapTile(int(*pMap)[64], int mx, int my,int nNewTile)
+{
+	int oldTile = pMap[g_nCurrentStage][my * 8 + mx];
+	pMap[g_nCurrentStage][my * 8 + mx] = nNewTile;
+	return oldTile;
 }
 
 void eventKeyDown(WPARAM wParam)
@@ -122,7 +138,8 @@ void eventKeyDown(WPARAM wParam)
 	default:
 		break;
 	}
-	if (getMapBlockAttr(g_nPlayerXpos, g_nPlayerYpos) == 1) {
+	//벽과 충돌 처리 
+	if (getMapTile( g_MapAttrBlock, g_nPlayerXpos, g_nPlayerYpos) == 1) {
 		g_nPlayerXpos = savePosx;
 		g_nPlayerYpos = savePosy;
 	}
@@ -202,24 +219,51 @@ void GDIPLUS_Loop(MSG &msg)
 
 					//게임 로직 
 					{
-						//스위치검사
+						//스위치 로직 처리 
 						if (g_nItemSwitchStatus == 0) {
 							if (g_nItemSwitchXpos == g_nPlayerXpos &&
 								g_nItemSwitchYpos == g_nPlayerYpos
 								) {
 								g_nItemSwitchStatus = 1;
-								g_MapAttrBlock[g_nCurrentStage][8 * g_nExitPosY + g_nExitPosX] = 0; //(7,2) 위치 막힘 제거 
-								g_MapRooms[g_nCurrentStage][8 * g_nExitPosY + g_nExitPosX] = 50; //문열림 타일 표시 
+								g_nExitStatus = 2;
+								//setMapTile(g_MapAttrBlock, g_nExitPosX, g_nExitPosY, 0);
+								//setMapTile(g_MapRooms, g_nExitPosX, g_nExitPosY, 50);//문열림 표시 							
 							}
 						}
+
+						//탈출구 로직 처리
+						switch (g_nExitStatus)
+						{
+						case 0:
+							//대기 
+							break;
+						case 1:
+						{
+							//문닫기 
+							setMapTile(g_MapAttrBlock, g_nExitPosX, g_nExitPosY, 1);
+							setMapTile(g_MapRooms, g_nExitPosX, g_nExitPosY, 48);
+							g_nExitStatus = 0; //대기 상태로...
+						}
+							break;
+						case 2:
+						{
+							//문열기 
+							setMapTile(g_MapAttrBlock, g_nExitPosX, g_nExitPosY, 0);
+							setMapTile(g_MapRooms, g_nExitPosX, g_nExitPosY, 50);
+							g_nExitStatus = 0;//대기 상태로...
+
+						}
+							break;
+						default:
+							break;
+						}
+						
+						
 						//문으로 나가기 검사
 						//if (g_MapRooms[g_nCurrentStage][g_nPlayerYpos * 8 + g_nPlayerXpos] == 50) {
-						if(g_nPlayerXpos == g_nExitPosX && g_nPlayerYpos == g_nExitPosY) {
-							//g_ptrCurrentMap = g_MapRoom2;
+						if(g_nPlayerXpos == g_nExitPosX && g_nPlayerYpos == g_nExitPosY) {							
 							g_nCurrentStage += 1; //다음판으로 
 							StartStage(g_nCurrentStage);
-							//g_nPlayerXpos = 3;
-							//g_nPlayerYpos = 3;
 						}
 					}
 
@@ -246,7 +290,10 @@ void GDIPLUS_Loop(MSG &msg)
 
 						//각종 아이템 ,트리거, 기구물 그리기 
 						if (g_nItemSwitchStatus == 0) {
-							drawTileIndex(graphBackBuffer, &imgBasicTile, g_nItemSwitchXpos, g_nItemSwitchYpos, 47);
+							drawTileIndex(graphBackBuffer, &imgBasicTile, 
+								g_nItemSwitchXpos, g_nItemSwitchYpos, 
+								g_nItemSwitchSprIndex
+								);
 						}
 						else {
 							//
