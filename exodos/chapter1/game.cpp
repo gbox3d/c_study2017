@@ -17,6 +17,18 @@ int g_MapRoom1[] = {
 	2, 2, 48, 2, 2, 2, 2, 2
 };
 
+int g_MapRoom2[] = {
+	3, 0, 48, 0, 0, 0, 0, 3,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	1,14,14,14,14,14,14, 1,
+	2, 2, 2, 2, 2, 2, 2, 2
+};
+
+
 int g_MapAttrBlock[] = {
 	1, 1, 1, 1, 1, 1, 1, 1,
 	1,0,0,0,0,0,0, 1,
@@ -26,11 +38,11 @@ int g_MapAttrBlock[] = {
 	1,0,0,0,0,0,0, 1,
 	1,0,0,0,0,0,0, 1,
 	1, 1, 1, 1, 1, 1, 1, 1
-
 };
 
-int g_nPlayerXpos = 3;
-int g_nPlayerYpos = 3;
+int *g_ptrCurrentMap;
+int g_nPlayerXpos;
+int g_nPlayerYpos;
 
 //문열림 스위치 오브잭트 
 int g_nItemSwitchXpos = 5;
@@ -40,6 +52,17 @@ int g_nItemSwitchStatus = 0; //0:스위치 멈춤, 1: 스위치 작동
 
 const int g_nTileSize = 16;
 const int g_nTileXCount = 8;
+
+DWORD g_dwGdiLoopFsm = 0; //루프상태제어
+
+void StartGame()
+{
+	g_ptrCurrentMap = g_MapRoom1;
+	g_nPlayerXpos = 3;
+	g_nPlayerYpos = 3;
+	g_dwGdiLoopFsm = 10; //랜더링 활성화 
+
+}
 
 int getMapBlockAttr(int mx, int my)
 {
@@ -93,7 +116,7 @@ void drawTile(Graphics *pGrp, Image *pImgBasicTile, int nPosX, int nPosY, int *p
 }
 
 
-DWORD g_dwGdiLoopFsm = 0; //루프상태제어
+
 void GDIPLUS_Loop(MSG &msg)
 {
 	//----------------------------------------------------------------------
@@ -154,6 +177,7 @@ void GDIPLUS_Loop(MSG &msg)
 								) {
 								g_nItemSwitchStatus = 1;
 								g_MapAttrBlock[8 * 7 + 2] = 0; //(7,2) 위치 막힘 제거 
+								g_MapRoom1[8 * 7 + 2] = 50; //문열림 타일 표시 
 							}
 						}
 
