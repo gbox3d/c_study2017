@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "utils.h"
 
 TCHAR g_szaMsgLog[1024][256];
 int g_nMsgLogTailIndex = 0;
