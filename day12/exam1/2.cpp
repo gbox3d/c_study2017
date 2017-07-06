@@ -17,7 +17,7 @@ void procTest2(HWND hWnd)
 	score[1][2] = 80;
 	score[1][3] = 30;
 
-	//두번째 학생
+	//3번째 학생
 	score[2][0] = 15;
 	score[2][1] = 66;
 	score[2][2] = 76;
@@ -27,6 +27,7 @@ void procTest2(HWND hWnd)
 		win32_Printf(hWnd, L"%d %d %d %d", score[i][0], score[i][1], score[i][2], score[i][3]);
 	}
 	
+	//합계 구하기 
 	int totalScore[4];
 
 	for (int i = 0; i < 4; i++) {
