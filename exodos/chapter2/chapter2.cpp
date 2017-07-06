@@ -1,8 +1,8 @@
-// exam1.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// chapter2.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "exam1.h"
+#include "chapter2.h"
 
 #define MAX_LOADSTRING 100
 
@@ -16,9 +16,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK procInputText(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-#include "../../engine/utils.h"
+#include "game.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -32,7 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_EXAM1, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_CHAPTER2, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -41,19 +40,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM1));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CHAPTER2));
 
     MSG msg;
-
-    // 기본 메시지 루프입니다.
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
+	GDIPLUS_Loop(msg);
+    
 
     return (int) msg.wParam;
 }
@@ -76,10 +67,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXAM1));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CHAPTER2));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXAM1);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CHAPTER2);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -124,52 +115,25 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-TCHAR g_szInputBuffer[256];
-void procTest2(HWND hWnd);
-void procTest3(HWND hWnd);
-void procTest4(HWND hWnd);
-void procTest5(HWND hWnd);
-void procTest6(HWND hWnd);
-void procTest7(HWND hWnd);
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_KEYDOWN:
+		eventKeyDown(wParam);
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
-			case IDM_EXAM_1:
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_INPUT_TEXT), hWnd, procInputText);
-				int nNum1, nNum2;
-				TCHAR szBuf[256];
-				win32_Scanf(g_szInputBuffer,L"%d %d %s",&nNum1,&nNum2,szBuf);
-				win32_Printf(hWnd, L"%d %s",nNum1+nNum2,szBuf);				
-				break;
-			case IDM_EXAM_2:
-				procTest2(hWnd);
-				break;
-			case IDM_EXAM_3:
-				procTest3(hWnd);
-				break;
-			case IDM_EXAM_4:
-				procTest4(hWnd);
-				break;
-			case IDM_EXAM_5:
-				procTest5(hWnd);
-				break;
-			case IDM_EXAM_6:
-				procTest6(hWnd);
-				break;
-			case IDM_EXAM_7:
-				procTest7(hWnd);
-				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
+			case IDM_GAME_START:
+				StartGame();
+				break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -183,10 +147,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
-			DisplayLog(hdc);
             EndPaint(hWnd, &ps);
         }
-        break;
+        break;	
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
@@ -214,29 +177,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
-}
-
-// 정보 대화 상자의 메시지 처리기입니다.
-INT_PTR CALLBACK procInputText(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK)
-		{
-			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_TEXT), g_szInputBuffer, 256);
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		else if (LOWORD(wParam) == IDCANCEL) {
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)FALSE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
 }
