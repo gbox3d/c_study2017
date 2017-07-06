@@ -147,7 +147,7 @@ void GDIPLUS_Loop(MSG &msg)
 
 					//게임 로직 
 					{
-						//위치가 스위치에 있는지 검사
+						//스위치검사
 						if (g_nItemSwitchStatus == 0) {
 							if (g_nItemSwitchXpos == g_nPlayerXpos &&
 								g_nItemSwitchYpos == g_nPlayerYpos

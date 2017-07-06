@@ -38,6 +38,9 @@
     <ClCompile Include="va_win32_exam.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="win32_printf.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="va_win32_exam.rc">

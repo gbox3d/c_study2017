@@ -111,19 +111,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-
-void testPrintf(HDC hdc,TCHAR *fmt, ...)
-{
-	va_list ap;
-	TCHAR szBuf[256];
-	va_start(ap,fmt);
-	//swprintf_s(szBuf, fmt, ap);
-	vswprintf_s(szBuf, fmt, ap);
-	va_end(ap);
-
-	TextOut(hdc, 0, 0, szBuf, wcslen(szBuf));
-
-}
+extern void testPrintf(HDC hdc, TCHAR *fmt, ...);
+//void testScanf(TCHAR *szBuf, TCHAR *fmt, ...);
+void testScanf(const TCHAR *szBuf, const TCHAR *fmt, ...);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -152,7 +142,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
-			testPrintf(hdc, L"%s %d", L"hello", 1234);
+			int nNum;
+			static TCHAR szTemp[256];
+			testScanf(L"1200 hello-world", L"%d %s", &nNum,szTemp);
+			testPrintf(hdc, L"%s %d", szTemp, nNum);
             EndPaint(hWnd, &ps);
         }
         break;
