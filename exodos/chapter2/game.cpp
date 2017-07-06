@@ -15,10 +15,10 @@ int g_MapRooms[][64] = {
 		1,14,14,14,14,14,14, 1,
 		1,14,14,14,14,14,14, 1,
 		1,14,14,14,14,14,14, 1,
-		2, 2, 48, 2, 2, 2, 2, 2
+		2, 2, 2, 2, 2, 2, 2, 2
 	},
 	{
-		3, 0, 48, 0, 0, 0, 0, 3,
+		3, 0, 0, 0, 0, 0, 0, 3,
 		1,14,14,14,14,14,14, 1,
 		1,14,14,14,14,14,14, 1,
 		1,14,14,10,10,14,14, 1,
@@ -50,10 +50,14 @@ int g_MapAttrBlock[][64] = {
 		1,0,0,0,0,0,0, 1,
 		1, 1, 1, 1, 1, 1, 1, 1 
 	}
-
 };
 
-//int *g_ptrCurrentMap;
+//캐릭터 리젠위치,열림스위치위치,탈출구 위치
+int g_StageInfo[][6] = {	
+	{3,3,5,3,7,2},
+	{1,1,5,3,7,5}
+};
+
 int g_nCurrentStage;
 int g_nPlayerXpos;
 int g_nPlayerYpos;
@@ -61,6 +65,7 @@ int g_nPlayerYpos;
 //문열림 스위치 오브잭트 
 int g_nItemSwitchXpos = 5;
 int g_nItemSwitchYpos = 3;
+int g_nExitPosX, g_nExitPosY;
 int g_nItemSwitchSprIndex = 47;
 int g_nItemSwitchStatus = 0; //0:스위치 멈춤, 1: 스위치 작동
 
@@ -69,13 +74,26 @@ const int g_nTileXCount = 8;
 
 DWORD g_dwGdiLoopFsm = 0; //루프상태제어
 
+void StartStage(int nStage)
+{
+	
+	g_nPlayerXpos = g_StageInfo[nStage][0];
+	g_nPlayerYpos = g_StageInfo[nStage][1];
+
+	g_nItemSwitchXpos = g_StageInfo[nStage][2];
+	g_nItemSwitchYpos = g_StageInfo[nStage][3];
+	g_nItemSwitchStatus = 0; //비활성 상태 
+
+	g_nExitPosX = g_StageInfo[nStage][4];
+	g_nExitPosY = g_StageInfo[nStage][5];
+}
+
 void StartGame()
 {
-	g_nCurrentStage = 0;
-	g_nPlayerXpos = 3;
-	g_nPlayerYpos = 3;
-	g_dwGdiLoopFsm = 10; //랜더링 활성화 
+	g_nCurrentStage = 0;	
+	StartStage(g_nCurrentStage);
 
+	g_dwGdiLoopFsm = 10; //랜더링 활성화 	
 }
 
 int getMapBlockAttr(int mx, int my)
@@ -190,16 +208,18 @@ void GDIPLUS_Loop(MSG &msg)
 								g_nItemSwitchYpos == g_nPlayerYpos
 								) {
 								g_nItemSwitchStatus = 1;
-								g_MapAttrBlock[g_nCurrentStage][8 * 7 + 2] = 0; //(7,2) 위치 막힘 제거 
-								g_MapRooms[g_nCurrentStage][8 * 7 + 2] = 50; //문열림 타일 표시 
+								g_MapAttrBlock[g_nCurrentStage][8 * g_nExitPosY + g_nExitPosX] = 0; //(7,2) 위치 막힘 제거 
+								g_MapRooms[g_nCurrentStage][8 * g_nExitPosY + g_nExitPosX] = 50; //문열림 타일 표시 
 							}
 						}
 						//문으로 나가기 검사
-						if (g_MapRooms[g_nCurrentStage][g_nPlayerYpos * 8 + g_nPlayerXpos] == 50) {
+						//if (g_MapRooms[g_nCurrentStage][g_nPlayerYpos * 8 + g_nPlayerXpos] == 50) {
+						if(g_nPlayerXpos == g_nExitPosX && g_nPlayerYpos == g_nExitPosY) {
 							//g_ptrCurrentMap = g_MapRoom2;
 							g_nCurrentStage += 1; //다음판으로 
-							g_nPlayerXpos = 3;
-							g_nPlayerYpos = 3;
+							StartStage(g_nCurrentStage);
+							//g_nPlayerXpos = 3;
+							//g_nPlayerYpos = 3;
 						}
 					}
 
