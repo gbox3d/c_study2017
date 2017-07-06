@@ -21,8 +21,8 @@ int g_MapRoom2[] = {
 	3, 0, 48, 0, 0, 0, 0, 3,
 	1,14,14,14,14,14,14, 1,
 	1,14,14,14,14,14,14, 1,
-	1,14,14,14,14,14,14, 1,
-	1,14,14,14,14,14,14, 1,
+	1,14,14,10,10,14,14, 1,
+	1,14,14,10,14,14,14, 1,
 	1,14,14,14,14,14,14, 1,
 	1,14,14,14,14,14,14, 1,
 	2, 2, 2, 2, 2, 2, 2, 2
@@ -180,7 +180,11 @@ void GDIPLUS_Loop(MSG &msg)
 								g_MapRoom1[8 * 7 + 2] = 50; //문열림 타일 표시 
 							}
 						}
-
+						if (g_ptrCurrentMap[g_nPlayerYpos * 8 + g_nPlayerXpos] == 50) {
+							g_ptrCurrentMap = g_MapRoom2;
+							g_nPlayerXpos = 3;
+							g_nPlayerYpos = 3;
+						}
 					}
 
 					//랜더링 
@@ -194,7 +198,7 @@ void GDIPLUS_Loop(MSG &msg)
 							for (int iy = 0; iy < 8; iy++) {
 								drawTile(graphBackBuffer,
 									&imgBasicTile,
-									ix, iy, g_MapRoom1);
+									ix, iy, g_ptrCurrentMap);
 							}
 						}
 						//플레이어 그리기
