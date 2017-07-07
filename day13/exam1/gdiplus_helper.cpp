@@ -35,9 +35,11 @@ void GDIPLUS_Loop(MSG &msg)
 		Graphics* graphBackBuffer = Graphics::FromImage(&bmpMem);
 
 		Pen penRed(Color(255, 0, 0));
+		Pen penYellow(Color(255, 255, 0));
 		Pen penWhite(Color(255, 255, 255));
 		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
 		Gdiplus::SolidBrush brushWhite(Color(255, 255, 255));
+		Gdiplus::SolidBrush brushGreen(Color(0, 255, 0));
 		FontFamily  fontFamily(L"굴림");
 		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
 		static LONG prev_tick;
@@ -75,12 +77,36 @@ void GDIPLUS_Loop(MSG &msg)
 						Graphics graphics(hdc);
 						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
 
+						//패스 그리기 
 						GraphicsPath pathObj;
 						pathObj.AddLine(0, 0, 50, 50);
-						pathObj.AddLine(50, 50, 150, 50);
-						pathObj.AddArc(Rect(150, 50, 50, 50),0,90);
-						
+						pathObj.AddLine(50, 20, 100, 20);
+						//pathObj.AddArc(Rect(100, 100, 50, 50),0,90);						
 						graphBackBuffer->DrawPath(&penWhite, &pathObj);
+
+						graphBackBuffer->DrawArc(&penWhite, Rect(160, 100, 50, 50), 0, 90);
+
+						graphBackBuffer->TranslateTransform(-50, 50);
+						graphBackBuffer->DrawPie(&penWhite, Rect(160, 100, 50, 50), 0, 90);
+						graphBackBuffer->ResetTransform();
+
+						//곡선 그리기
+						Point points[] = {
+							Point(50,50),
+							Point(80,90),
+							Point(120,90),
+							Point(150,50)
+						};
+
+						for (int i = 0; i < 4; i++) {
+							graphBackBuffer->TranslateTransform(-4, -4);
+							graphBackBuffer->FillRectangle(&brushGreen, Rect(points[i], Size(8, 8)));
+							graphBackBuffer->ResetTransform();
+						}
+
+						graphBackBuffer->DrawCurve(&penRed, points, 4);
+
+						graphBackBuffer->DrawBezier(&penYellow,points[0], points[1], points[2], points[3] );
 					
 						graphics.DrawImage(&bmpMem, rectScreen);
 					}
