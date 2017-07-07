@@ -1,14 +1,8 @@
-// gdip_exam1.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// activate_msg_exam.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "gdip_exam1.h"
-
-#include <windows.h>
-#include <objidl.h>
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
+#include "activate_msg_exam.h"
 
 #define MAX_LOADSTRING 100
 
@@ -23,7 +17,97 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+#include <objidl.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
 
+
+BOOL g_isRender = false;
+void GDIPLUS_Loop(MSG &msg)
+{
+	//----------------------------------------------------------------------
+	//gdi plus 초기화 코드 
+	GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR           gdiplusToken;
+
+	// Initialize GDI+.
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+	//-----------------------------------------------------------------------
+
+	{
+		bool quit = false;
+		//gdiplus 가 셧다운 되기전에 객체들이 삭제되어야 하므로 일부러 지역변수선언을 한단계 내려서 사용했다.
+		Gdiplus::Rect rectScreen(0, 0, 400, 400);
+		Bitmap bmpMem(rectScreen.Width, rectScreen.Height);
+		Graphics* graph = Graphics::FromImage(&bmpMem);
+
+		Pen pen(Color(255, 0, 0));
+		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
+		Gdiplus::SolidBrush brushWhite(Color(255, 255, 255));
+		FontFamily  fontFamily(L"굴림");
+		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
+
+		while (!quit) {
+
+			if (PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE))
+			{
+				if (msg.message == WM_QUIT)
+					quit = true;
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			else {
+				static LONG prev_tick;
+				SYSTEMTIME time;
+				GetSystemTime(&time);
+				LONG time_ms = (time.wSecond * 1000) + time.wMilliseconds;
+				// Get DC
+				HDC hdc = GetDC(msg.hwnd);
+
+				float fDelta = (time_ms - prev_tick) / 1000.f;
+				static float angle = 0;
+				if(g_isRender) {
+					Point pt(100, 0);
+					Matrix mt;
+					mt.Rotate(angle);
+					angle += (90 * fDelta);
+					if (angle > 360) {
+						angle = 0;
+					}
+
+					mt.TransformPoints(&pt);
+
+					Graphics graphics(hdc);
+					graph->FillRectangle(&brushBlack, rectScreen);
+
+					TCHAR szBuf[256];
+					swprintf_s(szBuf, L" %f", 1.0 / fDelta);
+					graph->DrawString(szBuf, -1, &font, PointF(0, 0), &brushWhite);
+
+					graph->TranslateTransform(100, 100);
+
+					graph->DrawLine(&pen, Point(0, 0), pt);
+					graph->ResetTransform();
+
+					graphics.DrawImage(&bmpMem, rectScreen);
+
+				}
+
+				ReleaseDC(msg.hwnd, hdc);
+
+				prev_tick = time_ms;
+			}
+		}
+	}
+
+	//--------------------------------------
+	//gdi plus 종료코드 
+	GdiplusShutdown(gdiplusToken);
+	//--------------------------------------
+
+
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -35,18 +119,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // TODO: 여기에 코드를 입력합니다.
 
-	//----------------------------------------------------------------------
-	//gdi plus 초기화 코드 
-	GdiplusStartupInput gdiplusStartupInput;
-	ULONG_PTR           gdiplusToken;
-
-	// Initialize GDI+.
-	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-	//-----------------------------------------------------------------------
-
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_GDIP_EXAM1, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_ACTIVATE_MSG_EXAM, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -55,24 +130,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_GDIP_EXAM1));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_ACTIVATE_MSG_EXAM));
 
     MSG msg;
 
     // 기본 메시지 루프입니다.
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-
-	//--------------------------------------
-	//gdi plus 종료코드 
-	GdiplusShutdown(gdiplusToken);
-	//--------------------------------------
+	GDIPLUS_Loop(msg);
 
     return (int) msg.wParam;
 }
@@ -95,10 +158,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_GDIP_EXAM1));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ACTIVATE_MSG_EXAM));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_GDIP_EXAM1);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_ACTIVATE_MSG_EXAM);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -169,20 +232,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
-
-			Graphics graphics(hdc);
-			
-			Pen      pen(Color(255, 0, 0, 255));
-			graphics.DrawLine(&pen, 0, 0, 200, 100);			
-			graphics.DrawEllipse(&pen, 0, 0, 200, 100);
-			graphics.DrawRectangle(&pen, Rect(200,0,100,100));			
-
-			SolidBrush brush(Color(0, 255, 0));
-			graphics.FillEllipse(&brush,0,100,200,100);			
-
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_ACTIVATE:
+	{
+		TCHAR szBuf[256];
+		swprintf_s(szBuf, 256, L"***** activate Message : %ld ****** \n", wParam);
+		OutputDebugString(szBuf);
+
+		if (wParam == 1) { g_isRender = true; }
+		else { g_isRender = false; }
+
+	}
+		break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
