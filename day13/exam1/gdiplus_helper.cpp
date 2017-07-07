@@ -114,8 +114,9 @@ void GDIPLUS_Loop(MSG &msg)
 		BYTE bufTest_DrawPath_Parm[256];
 		pTemp = bufTest_DrawPath_Parm;			
 		{
-			DWORD nTemp = (DWORD)&penRed;
-			memcpy(pTemp, &nTemp, 4);
+			//DWORD nTemp = (DWORD)&penRed;
+			//memcpy(pTemp, &nTemp, 4);
+			*(int *)pTemp = (DWORD)&penRed;
 		}
 		
 		BYTE bufTest_DrawRect_Parm[256];
@@ -130,12 +131,18 @@ void GDIPLUS_Loop(MSG &msg)
 		pTemp = bufTest_DrawCurve_Parm;
 		DWORD nTemp = (DWORD)&penRed;
 		{
+			*(DWORD *)pTemp = (DWORD)&penRed;
+			*(DWORD *)((BYTE *)pTemp + 4) = (DWORD)&penWhite;
+			*(DWORD *)((BYTE *)pTemp + 8) = (DWORD)&brushGreen;
+
+			/*
 			DWORD nTemp = (DWORD)&penRed;
 			memcpy(pTemp, &nTemp, 4);
 			nTemp = (DWORD)&penWhite;
 			memcpy((BYTE *)pTemp+4, &nTemp, 4);
 			nTemp = (DWORD)&brushGreen;
 			memcpy((BYTE *)pTemp + 8, &nTemp, 4);
+			*/
 		}
 		
 
