@@ -16,16 +16,16 @@ int main()
 	pInt = &a;
 	printf("%d \n", *pInt);
 
-	pInt = (int *)&b;
+	pInt = (int *)&b; 
 	printf("%lf \n", *((double *)pInt));
 
-	/*
+	
 	pVoid = &a;
 	printf("%d \n", *((int *)pVoid));
 
 	pVoid = &b;
 	printf("%lf \n", *((double *)pVoid));
-	*/
+	
 
     return 0;
 }
