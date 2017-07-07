@@ -53,14 +53,20 @@ int g_MapAttrBlock[][64] = {
 };
 
 //캐릭터 리젠위치,열림스위치위치,탈출구 위치
-int g_StageInfo[][7] = {	
-	{3,3,5,3,7,2,31},
-	{1,1,5,3,7,5,47}
+int g_StageInfo[][10] = {	
+	{
+		3,3, //캐릭터 리젠
+		5,3, //열림 스위치
+	7,2,31, //탈출구
+	6,6,70 //열쇠
+	},
+	{1,1,5,3,7,5,47,5,5,70}
 };
 
 int g_nCurrentStage;
 int g_nPlayerXpos;
 int g_nPlayerYpos;
+int g_nPlayerKeyCount;
 
 //문열림 스위치 오브잭트 
 int g_nItemSwitchXpos = 5;
@@ -68,6 +74,11 @@ int g_nItemSwitchYpos = 3;
 int g_nItemSwitchSprIndex;
 int g_nItemSwitchStatus = 0; //0:스위치 멈춤, 1: 스위치 작동
 
+//열쇠 오브잭트
+int g_nItemKeyXpos;
+int g_nItemKeyYpos;
+int g_nItemKeySprIndex;
+int g_nItemKeyStatus = 0;
 
 //탈출구 오브잭트
 int g_nExitPosX, g_nExitPosY;
@@ -84,17 +95,24 @@ void StartStage(int nStage)
 	
 	g_nPlayerXpos = g_StageInfo[nStage][0];
 	g_nPlayerYpos = g_StageInfo[nStage][1];
+	g_nPlayerKeyCount = 0;
 
 	//스위치
 	g_nItemSwitchXpos = g_StageInfo[nStage][2];
 	g_nItemSwitchYpos = g_StageInfo[nStage][3];
 	g_nItemSwitchSprIndex = g_StageInfo[nStage][6];
 	g_nItemSwitchStatus = 0; //비활성 상태 
-
+		
 	//탈출구
 	g_nExitPosX = g_StageInfo[nStage][4];
 	g_nExitPosY = g_StageInfo[nStage][5];	
 	g_nExitStatus = 1;
+
+	//열쇠 초기화
+	g_nItemKeyXpos = g_StageInfo[nStage][7];
+	g_nItemKeyYpos = g_StageInfo[nStage][8];
+	g_nItemKeySprIndex = g_StageInfo[nStage][9];
+	g_nItemKeyStatus = 1; //1:생존 0:다이 
 }
 
 void StartGame()
@@ -222,12 +240,24 @@ void GDIPLUS_Loop(MSG &msg)
 						//스위치 로직 처리 
 						if (g_nItemSwitchStatus == 0) {
 							if (g_nItemSwitchXpos == g_nPlayerXpos &&
-								g_nItemSwitchYpos == g_nPlayerYpos
+								g_nItemSwitchYpos == g_nPlayerYpos &&
+								g_nPlayerKeyCount > 0
 								) {
 								g_nItemSwitchStatus = 1;
 								g_nExitStatus = 2;
+								g_nPlayerKeyCount--;
 								//setMapTile(g_MapAttrBlock, g_nExitPosX, g_nExitPosY, 0);
 								//setMapTile(g_MapRooms, g_nExitPosX, g_nExitPosY, 50);//문열림 표시 							
+							}
+						}
+
+						//키 획득 로직처리 
+						if (g_nItemKeyStatus == 1) { //열쇠를 주울수 있는 상태인가?
+							if (g_nPlayerXpos == g_nItemKeyXpos &&
+								g_nPlayerYpos == g_nItemKeyYpos
+								) {
+								g_nItemKeyStatus = 0;
+								g_nPlayerKeyCount++;
 							}
 						}
 
@@ -299,6 +329,13 @@ void GDIPLUS_Loop(MSG &msg)
 							//
 						}
 
+						//열쇠 랜더링 
+						if (g_nItemKeyStatus == 1) {
+							drawTileIndex(graphBackBuffer, &imgBasicTile,
+								g_nItemKeyXpos, g_nItemKeyYpos,
+								g_nItemKeySprIndex
+							);
+						}
 
 
 						graphics.ScaleTransform(2.0, 2.0);
