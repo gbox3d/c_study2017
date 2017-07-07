@@ -32,8 +32,6 @@ int main()
 	d = 9.8;
 	fpSum = sum_double;
 	fpSum(&c, &d);
-
-
     return 0;
 }
 
