@@ -14,6 +14,14 @@
 #define IDR_MAINFRAME                   128
 #define ID_32771                        32771
 #define IDM_START                       32772
+#define ID_32773                        32773
+#define ID_32774                        32774
+#define IDM_TEST_PATH                   32775
+#define IDM_TEST_RECT                   32776
+#define ID_32777                        32777
+#define IDM_TEST_NONE                   32778
+#define ID_32779                        32779
+#define IDM_TEST_CURVE                  32780
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -22,7 +30,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32773
+#define _APS_NEXT_COMMAND_VALUE         32781
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

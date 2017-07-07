@@ -16,6 +16,50 @@ void StopGDILoop()
 	g_dwGdiLoopFsm = 20;
 }
 
+
+void Test_DrawPath(Graphics* graphBackBuffer,Pen *pen)
+{
+	//패스 그리기 
+	GraphicsPath pathObj;
+	pathObj.AddLine(0, 0, 50, 50);
+	pathObj.AddLine(50, 20, 100, 20);
+	//pathObj.AddArc(Rect(100, 100, 50, 50),0,90);						
+	graphBackBuffer->DrawPath(pen, &pathObj);
+
+	graphBackBuffer->DrawArc(pen, Rect(160, 100, 50, 50), 0, 90);
+
+	graphBackBuffer->TranslateTransform(-50, 50);
+	graphBackBuffer->DrawPie(pen, Rect(160, 100, 50, 50), 0, 90);
+	graphBackBuffer->ResetTransform();
+}
+
+void Test_DrawRect(Graphics* graphBackBuffer, Pen *pen)
+{
+	graphBackBuffer->DrawRectangle(pen, Rect(160, 100, 50, 50));
+
+}
+
+void Test_DrawCurve(Graphics* graphBackBuffer, Pen *pen,Pen *pen2,Brush *brush)
+{
+	//곡선 그리기
+	Point points[] = {
+		Point(50,50),
+		Point(80,90),
+		Point(120,90),
+		Point(150,50)
+	};
+
+	for (int i = 0; i < 4; i++) {
+		graphBackBuffer->TranslateTransform(-4, -4);
+		graphBackBuffer->FillRectangle(brush, Rect(points[i], Size(8, 8)));
+		graphBackBuffer->ResetTransform();
+	}
+
+	graphBackBuffer->DrawCurve(pen, points, 4);
+
+	graphBackBuffer->DrawBezier(pen2, points[0], points[1], points[2], points[3]);
+}
+
 void GDIPLUS_Loop(MSG &msg)
 {
 	//----------------------------------------------------------------------
@@ -45,6 +89,9 @@ void GDIPLUS_Loop(MSG &msg)
 		static LONG prev_tick;
 		static SYSTEMTIME time;
 		
+		void(*Test_DrawFp)(Graphics*, Pen *);
+		Test_DrawFp = NULL;
+
 		while (!quit) {
 
 			if (PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE))
@@ -52,9 +99,26 @@ void GDIPLUS_Loop(MSG &msg)
 				if (msg.message == WM_QUIT)
 					quit = true;
 				else if (msg.message == WM_COMMAND) {
-					if (msg.wParam == IDM_START) {
+					switch (msg.wParam)
+					{
+					case IDM_START:
 						StartGDILoop();
-					}
+						break;
+					case IDM_TEST_RECT:
+						Test_DrawFp = Test_DrawRect;
+						break;
+					case IDM_TEST_PATH:
+						Test_DrawFp = Test_DrawPath;
+						break; 
+					case IDM_TEST_CURVE:
+						//Test_DrawFp = Test_DrawCurve;
+						break;
+					case IDM_TEST_NONE:
+						Test_DrawFp = NULL;
+						break;
+					default:
+						break;
+					}					
 				}
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
@@ -77,36 +141,12 @@ void GDIPLUS_Loop(MSG &msg)
 						Graphics graphics(hdc);
 						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
 
-						//패스 그리기 
-						GraphicsPath pathObj;
-						pathObj.AddLine(0, 0, 50, 50);
-						pathObj.AddLine(50, 20, 100, 20);
-						//pathObj.AddArc(Rect(100, 100, 50, 50),0,90);						
-						graphBackBuffer->DrawPath(&penWhite, &pathObj);
+						if (Test_DrawFp != NULL) {
+							Test_DrawFp(graphBackBuffer, &penWhite);
+						}					
+						
 
-						graphBackBuffer->DrawArc(&penWhite, Rect(160, 100, 50, 50), 0, 90);
-
-						graphBackBuffer->TranslateTransform(-50, 50);
-						graphBackBuffer->DrawPie(&penWhite, Rect(160, 100, 50, 50), 0, 90);
-						graphBackBuffer->ResetTransform();
-
-						//곡선 그리기
-						Point points[] = {
-							Point(50,50),
-							Point(80,90),
-							Point(120,90),
-							Point(150,50)
-						};
-
-						for (int i = 0; i < 4; i++) {
-							graphBackBuffer->TranslateTransform(-4, -4);
-							graphBackBuffer->FillRectangle(&brushGreen, Rect(points[i], Size(8, 8)));
-							graphBackBuffer->ResetTransform();
-						}
-
-						graphBackBuffer->DrawCurve(&penRed, points, 4);
-
-						graphBackBuffer->DrawBezier(&penYellow,points[0], points[1], points[2], points[3] );
+						
 					
 						graphics.DrawImage(&bmpMem, rectScreen);
 					}
