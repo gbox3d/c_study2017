@@ -17,11 +17,10 @@ void StopGDILoop()
 }
 
 
-void Test_DrawPath( void *pParam )
+void Test_DrawPath(Graphics* graphBackBuffer,void *pParam )
 {
-
-	Graphics* graphBackBuffer;
-	Pen *pen;
+	
+	Pen *pen = *(Pen **)pParam;
 
 	//패스 그리기 
 	GraphicsPath pathObj;
@@ -37,19 +36,25 @@ void Test_DrawPath( void *pParam )
 	graphBackBuffer->ResetTransform();
 }
 
-void Test_DrawRect(void *pParam)
+void Test_DrawRect(Graphics* graphBackBuffer, void *pParam)
 {
-	Graphics* graphBackBuffer;
-	Pen *pen;
+	//Graphics* graphBackBuffer;
+	
+	//Pen *pen = (Pen *)pParam;
+	Pen *pen = *(Pen **)pParam;
 	graphBackBuffer->DrawRectangle(pen, Rect(160, 100, 50, 50));
 
 }
 
-void Test_DrawCurve(void *pParam)
+void Test_DrawCurve(Graphics* graphBackBuffer, void *pParam)
 {
-	Graphics* graphBackBuffer;
+	//Graphics* graphBackBuffer;
 	Pen *pen, *pen2;
 	Brush *brush;
+
+	pen = *(Pen **)pParam;
+	pen2 = *(Pen **)((BYTE *)pParam + 4);
+	brush = *(Brush **)((BYTE *)pParam + 8);
 
 	//곡선 그리기
 	Point points[] = {
@@ -99,17 +104,40 @@ void GDIPLUS_Loop(MSG &msg)
 		static LONG prev_tick;
 		static SYSTEMTIME time;
 		
-		void(*Test_DrawFp)(void *);
+		void(*Test_DrawFp)(Graphics* graphBackBuffer, void *);
 		void *pThisParam;
 		Test_DrawFp = NULL;
 		pThisParam = NULL;
 
+		void *pTemp;
+
 		BYTE bufTest_DrawPath_Parm[256];
-
-
-
+		pTemp = bufTest_DrawPath_Parm;			
+		{
+			DWORD nTemp = (DWORD)&penRed;
+			memcpy(pTemp, &nTemp, 4);
+		}
+		
 		BYTE bufTest_DrawRect_Parm[256];
+		{
+			DWORD nTemp = (DWORD)&penRed;
+			memcpy(pTemp, &nTemp, 4);
+		}
+		//pTemp = bufTest_DrawRect_Parm;
+		//memcpy(pTemp, &penWhite, 4);
+
 		BYTE bufTest_DrawCurve_Parm[256];
+		pTemp = bufTest_DrawCurve_Parm;
+		DWORD nTemp = (DWORD)&penRed;
+		{
+			DWORD nTemp = (DWORD)&penRed;
+			memcpy(pTemp, &nTemp, 4);
+			nTemp = (DWORD)&penWhite;
+			memcpy((BYTE *)pTemp+4, &nTemp, 4);
+			nTemp = (DWORD)&brushGreen;
+			memcpy((BYTE *)pTemp + 8, &nTemp, 4);
+		}
+		
 
 		while (!quit) {
 
@@ -164,7 +192,7 @@ void GDIPLUS_Loop(MSG &msg)
 						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
 
 						if (Test_DrawFp != NULL) {
-							Test_DrawFp(pThisParam);
+							Test_DrawFp( graphBackBuffer, pThisParam);
 						}					
 						
 
