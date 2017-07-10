@@ -61,7 +61,7 @@ int g_StageInfo[][10] = {
 	6,6,70 //¿­¼è
 	},
 	{1,1,5,3,7,5,47,5,5,70}
-};
+}; 
 
 int g_nCurrentStage;
 int g_nPlayerXpos;
