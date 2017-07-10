@@ -12,6 +12,7 @@ int main()
 
 	//pTemp = pStr;
 	pTemp = (char *)malloc(strlen(pStr)+1);
+	
 	strcpy(pTemp, pStr);
 	pTemp[0] = 'H';
 	printf("%u ,%s \n", pTemp, pTemp);
@@ -19,7 +20,6 @@ int main()
 
 	free(pTemp);
 
-
-    return 0;
+	return 0;
 }
 
