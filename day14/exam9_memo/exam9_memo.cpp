@@ -154,9 +154,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case IDM_MEMO_INS:
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_INS), hWnd, procMemoIns);
 				break;
-			case IDM_MEMO_DEL:
+			case IDM_DEL_INDEX:
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_DEL), hWnd, procMemoDel);
 				break;
+			case IDM_DEL_FRONT:
+			{
+				if (g_nMemoCount > 0) {
+					g_nMemoCount--;					
+					free(g_pszMemoList[0]);
+					for (int i = 1; i <= g_nMemoCount; i++) {						
+						g_pszMemoList[i - 1] = g_pszMemoList[i];						
+					}
+					g_pszMemoList[g_nMemoCount] = NULL;
+					//free(g_pszMemoList[g_nMemoCount]);
+				}
+
+			}
+				break;
+			case IDM_DEL_BACK: 
+				if (g_nMemoCount > 0) {
+					g_nMemoCount--;
+					
+					free(g_pszMemoList[g_nMemoCount]);
+					g_pszMemoList[g_nMemoCount] = NULL;
+
+				}
+				break;
+			
 			case IDM_MEMO_VIEW:
 				//DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_VIEW), hWnd, procMemoView);
 			{
@@ -301,6 +325,8 @@ INT_PTR CALLBACK procMemoDel(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			TCHAR szBuf[256];
 			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_DEL), szBuf, 256);
 			int nSel = _wtoi(szBuf);
+
+			//....
 
 
 			EndDialog(hDlg, LOWORD(wParam));
