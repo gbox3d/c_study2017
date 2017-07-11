@@ -18,7 +18,7 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
+INT_PTR CALLBACK procTileSelDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -141,19 +141,32 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 S_GAMEMAP g_GameMap;
+
+int g_nCurrentTileIndex;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
 	case WM_CREATE:
+		g_nCurrentTileIndex = 1;
 		InitMap(&g_GameMap, 8, 8, L"../../res/loveable_rogue.png", 16, 16);
+		g_GameMap.m_TilePositions[0] = irr::core::vector2di(0, 177);
+		g_GameMap.m_TilePositions[1] = irr::core::vector2di(16, 177);
+		g_GameMap.m_TilePositions[2] = irr::core::vector2di(16*2, 177);
+		g_GameMap.m_TilePositions[3] = irr::core::vector2di(16*3, 177);
+		g_GameMap.m_TilePositions[4] = irr::core::vector2di(16 * 4, 177);
+		g_GameMap.m_TilePositions[5] = irr::core::vector2di(16 * 5, 177);
 		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
-            {
+            {			
+			case IDM_TILE_SEL:
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_SELECT_TILE), hWnd, procTileSelDlg);
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -173,7 +186,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		swprintf(szBuf, L"%d ,%d \n", mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight);
 		OutputDebugString(szBuf);
 
-		SetMapIndex(&g_GameMap, mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight,1);
+		SetMapIndex(&g_GameMap, 
+			mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight,
+			g_nCurrentTileIndex);
+
 		InvalidateRect(hWnd, NULL, TRUE);
 
 	}
@@ -217,3 +233,33 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
+// 정보 대화 상자의 메시지 처리기입니다.
+INT_PTR CALLBACK procTileSelDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK )
+		{
+			TCHAR szBuf[64];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_SELTILE), szBuf, 64);
+
+			g_nCurrentTileIndex = _wtoi(szBuf);
+
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		else if (LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+

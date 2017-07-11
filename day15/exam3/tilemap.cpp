@@ -24,10 +24,12 @@ void SetMapIndex(S_GAMEMAP *pMap,int x, int y, int index)
 
 void DrawTile(S_GAMEMAP *pMap, Graphics *pGrp,int x, int y,int nTileIndex)
 {
+	int cutx = pMap->m_TilePositions[nTileIndex].X;
+	int cuty = pMap->m_TilePositions[nTileIndex].Y;
 	pGrp->DrawImage(pMap->m_ImageObj,
 		Rect(x * pMap->m_TileWidth, y * pMap->m_TileHeight, pMap->m_TileWidth, pMap->m_TileHeight),
-		0, //원본 x 위치
-		177,  //원본 y 위치
+		cutx,  //원본 x 위치
+		cuty,  //원본 y 위치
 		pMap->m_TileWidth, pMap->m_TileHeight,
 		UnitPixel);
 
@@ -39,8 +41,8 @@ void DrawMap(S_GAMEMAP *pMap, Graphics *pGrp, int xOrg, int yOrg)
 		for (int j = 0; j < pMap->m_nWidth; j++) {
 			//...
 			int nTileIndex = pMap->m_Map[j + (i*pMap->m_nWidth)];
-			if (nTileIndex != 0) {
-				DrawTile(pMap, pGrp, xOrg + j, yOrg + i, nTileIndex);
+			if (nTileIndex > 0) {
+				DrawTile(pMap, pGrp, xOrg + j, yOrg + i, nTileIndex-1);
 			}
 			else {
 

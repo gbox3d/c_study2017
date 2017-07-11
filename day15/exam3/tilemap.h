@@ -7,7 +7,8 @@ struct S_GAMEMAP {
 	//tile
 	Image *m_ImageObj;
 	int m_TileWidth;
-	int m_TileHeight;
+	int m_TileHeight;	
+	irr::core::vector2di m_TilePositions[256];
 };
 
 extern void InitMap(S_GAMEMAP *pMap, int width, int height, TCHAR *szImgFile,
