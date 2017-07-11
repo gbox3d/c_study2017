@@ -155,11 +155,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					FILE *fp;
 					fp = fopen("save.bin", "rb");
-
 					fread(&g_HeroPlayer, sizeof(S_Character), 1, fp);
-
 					fclose(fp);
-
 				}
 				InvalidateRect(hWnd, NULL, TRUE);
 
