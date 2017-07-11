@@ -19,7 +19,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK procTileSelDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-
+INT_PTR CALLBACK procTileScriptDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -163,9 +163,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
-            {			
+            {	
+			case IDM_SCRIPT:
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_SCRIPT), hWnd, procTileScriptDlg);
+				InvalidateRect(hWnd, NULL, TRUE);
+				break;
 			case IDM_TILE_SEL:
-				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_SELECT_TILE), hWnd, procTileSelDlg);
+				DialogBox(hInst,  MAKEINTRESOURCE(IDD_DIALOG_SELECT_TILE), hWnd, procTileSelDlg);
 				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -251,6 +255,53 @@ INT_PTR CALLBACK procTileSelDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 			g_nCurrentTileIndex = _wtoi(szBuf);
 
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		else if (LOWORD(wParam) == IDCANCEL) {
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)FALSE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+// 정보 대화 상자의 메시지 처리기입니다.
+INT_PTR CALLBACK procTileScriptDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK)
+		{
+			TCHAR szBuf[64];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_SCRIPT), szBuf, 64);
+
+			TCHAR *token;
+			token = wcstok(szBuf, L", ");
+
+			//SetMapIndex
+			if (!wcscmp(L"smi", token)) {
+				int x, y, idx;
+				token = wcstok(NULL, L", ");
+				x = _wtoi(token);
+				token = wcstok(NULL, L", ");
+				y = _wtoi(token);
+				token = wcstok(NULL, L", ");
+				idx = _wtoi(token);
+				SetMapIndex(&g_GameMap, x, y, idx);
+				
+			}
+			else {
+				MessageBox(hDlg, L"존재하지않는 스크립트입니다.", L"", MB_OK);
+			}		
+
+			
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
