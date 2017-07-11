@@ -165,14 +165,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+	case WM_LBUTTONDOWN:
+	{
+		int mx = LOWORD(lParam);
+		int my = HIWORD(lParam);
+		TCHAR szBuf[256];
+		swprintf(szBuf, L"%d ,%d \n", mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight);
+		OutputDebugString(szBuf);
+
+		SetMapIndex(&g_GameMap, mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight,1);
+		InvalidateRect(hWnd, NULL, TRUE);
+
+	}
+		break;	
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
 			Graphics grp(hdc);
-			DrawTile(&g_GameMap, &grp,0, 0, 1);
-
+			//DrawTile(&g_GameMap, &grp,0, 0, 1);
+			DrawMap(&g_GameMap,&grp,0,0);
             EndPaint(hWnd, &ps);
         }
         break;

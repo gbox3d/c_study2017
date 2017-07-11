@@ -38,6 +38,13 @@ void DrawMap(S_GAMEMAP *pMap, Graphics *pGrp, int xOrg, int yOrg)
 	for (int i = 0; i < pMap->m_nHeight; i++) {
 		for (int j = 0; j < pMap->m_nWidth; j++) {
 			//...
+			int nTileIndex = pMap->m_Map[j + (i*pMap->m_nWidth)];
+			if (nTileIndex != 0) {
+				DrawTile(pMap, pGrp, xOrg + j, yOrg + i, nTileIndex);
+			}
+			else {
+
+			}			
 			//pGrp->DrawImage(img,)
 			//pGrp->DrawImage(pMap->m_ImageObj,Rect())
 		}
