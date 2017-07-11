@@ -7,7 +7,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exam1", "exam1\exam1.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exam2", "exam2\exam2.vcxproj", "{25E0F522-3077-4B87-BF27-334079898098}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exam3", "exam3\exam3.vcxproj", "{32B69FB2-D0D2-4C8B-BA11-0A81BB20F1D0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exam3_mapeditor_1", "exam3\exam3.vcxproj", "{32B69FB2-D0D2-4C8B-BA11-0A81BB20F1D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3B08908-B8FA-4385-8879-A8BFCECD8869}"
+	ProjectSection(SolutionItems) = preProject
+		homework.txt = homework.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
