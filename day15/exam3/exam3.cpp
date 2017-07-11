@@ -151,12 +151,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		g_nCurrentTileIndex = 1;
 		InitMap(&g_GameMap, 8, 8, L"../../res/loveable_rogue.png", 16, 16);
-		g_GameMap.m_TilePositions[0] = irr::core::vector2di(0, 177);
-		g_GameMap.m_TilePositions[1] = irr::core::vector2di(16, 177);
-		g_GameMap.m_TilePositions[2] = irr::core::vector2di(16*2, 177);
-		g_GameMap.m_TilePositions[3] = irr::core::vector2di(16*3, 177);
-		g_GameMap.m_TilePositions[4] = irr::core::vector2di(16 * 4, 177);
-		g_GameMap.m_TilePositions[5] = irr::core::vector2di(16 * 5, 177);
+		SetTilePosition(&g_GameMap,0, 177, 0);
+		SetTilePosition(&g_GameMap, 16, 177, 1);
+		SetTilePosition(&g_GameMap, 16*2, 177, 2);
+		SetTilePosition(&g_GameMap, 16*3, 177, 3);
+		
 		break;
     case WM_COMMAND:
         {
@@ -296,6 +295,16 @@ INT_PTR CALLBACK procTileScriptDlg(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				idx = _wtoi(token);
 				SetMapIndex(&g_GameMap, x, y, idx);
 				
+			}
+			else if (!wcscmp(L"stp", token)) {
+				int x, y, idx;
+				token = wcstok(NULL, L", ");
+				x = _wtoi(token);
+				token = wcstok(NULL, L", ");
+				y = _wtoi(token);
+				token = wcstok(NULL, L", ");
+				idx = _wtoi(token);
+				SetTilePosition(&g_GameMap, x, y, idx);
 			}
 			else {
 				MessageBox(hDlg, L"존재하지않는 스크립트입니다.", L"", MB_OK);

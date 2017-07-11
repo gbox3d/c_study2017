@@ -17,6 +17,11 @@ void InitMap(S_GAMEMAP *pMap, int width, int height,TCHAR *szImgFile,
 	pMap->m_ImageObj = new Image(szImgFile);
 }
 
+void SetTilePosition(S_GAMEMAP *pMap, int x, int y, int index)
+{
+	pMap->m_TilePositions[index] = irr::core::vector2di(x, y);
+}
+
 void SetMapIndex(S_GAMEMAP *pMap,int x, int y, int index)
 {
 	pMap->m_Map[pMap->m_nWidth*y + x] = index;
@@ -32,7 +37,6 @@ void DrawTile(S_GAMEMAP *pMap, Graphics *pGrp,int x, int y,int nTileIndex)
 		cuty,  //원본 y 위치
 		pMap->m_TileWidth, pMap->m_TileHeight,
 		UnitPixel);
-
 }
 
 void DrawMap(S_GAMEMAP *pMap, Graphics *pGrp, int xOrg, int yOrg)
