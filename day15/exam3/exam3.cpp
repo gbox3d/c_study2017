@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "exam3.h"
 
+#include "tilemap.h"
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -28,6 +30,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
+	//----------------------------------------------------------------------
+	//gdi plus 초기화 코드 
+	GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR           gdiplusToken;
+
+	// Initialize GDI+.
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+	//-----------------------------------------------------------------------
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -53,6 +63,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+
+	//--------------------------------------
+	//gdi plus 종료코드 
+	GdiplusShutdown(gdiplusToken);
+	//--------------------------------------
+
+
 
     return (int) msg.wParam;
 }
@@ -123,10 +140,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+S_GAMEMAP g_GameMap;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_CREATE:
+		InitMap(&g_GameMap, 8, 8, L"../../res/loveable_rogue.png", 16, 16);
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -149,6 +170,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
+			Graphics grp(hdc);
+			DrawTile(&g_GameMap, &grp,0, 0, 1);
+
             EndPaint(hWnd, &ps);
         }
         break;
