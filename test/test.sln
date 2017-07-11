@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "va_win32_exam", "va_win32_e
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "activate_msg_exam", "activate_msg_exam\activate_msg_exam.vcxproj", "{A4155FC1-FAD8-43C2-B609-FD6CCFE2984E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "math_exam1", "math_exam1\math_exam1.vcxproj", "{7CCC95F8-5240-441E-897A-5EF46E2F77E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{A4155FC1-FAD8-43C2-B609-FD6CCFE2984E}.Release|x64.Build.0 = Release|x64
 		{A4155FC1-FAD8-43C2-B609-FD6CCFE2984E}.Release|x86.ActiveCfg = Release|Win32
 		{A4155FC1-FAD8-43C2-B609-FD6CCFE2984E}.Release|x86.Build.0 = Release|Win32
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Debug|x64.ActiveCfg = Debug|x64
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Debug|x64.Build.0 = Debug|x64
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Debug|x86.ActiveCfg = Debug|Win32
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Debug|x86.Build.0 = Debug|Win32
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Release|x64.ActiveCfg = Release|x64
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Release|x64.Build.0 = Release|x64
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Release|x86.ActiveCfg = Release|Win32
+		{7CCC95F8-5240-441E-897A-5EF46E2F77E8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

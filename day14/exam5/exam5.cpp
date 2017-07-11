@@ -14,8 +14,7 @@ int main()
 	*((BYTE *)pBuf) = 'c';
 	*(double *)((BYTE *)pBuf + 1) = 3.14;
 	*(int *)((BYTE *)pBuf + 1 + 8) = 7;
-
-
+	
 	printf("%c %lf %d \n",
 		*((BYTE *)pBuf),
 		*(double *)((BYTE *)pBuf + 1),
