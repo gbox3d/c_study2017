@@ -137,6 +137,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
 			case IDM_NEW:
 				DialogBox(hInst, MAKEINTRESOURCE(IDD_NEW), hWnd, procDlgNew);
+				InvalidateRect(hWnd, NULL, TRUE);
+				break;
+			case IDM_SAVE:
+			{
+				FILE *fp;
+				fp = fopen("save.bin", "wb");
+
+				fwrite(&g_HeroPlayer, sizeof(S_Character), 1, fp);
+
+				fclose(fp);
+
+			}
+				break;
+			case IDM_LOAD:
+			{
+				{
+					FILE *fp;
+					fp = fopen("save.bin", "rb");
+
+					fread(&g_HeroPlayer, sizeof(S_Character), 1, fp);
+
+					fclose(fp);
+
+				}
+				InvalidateRect(hWnd, NULL, TRUE);
+
+			}
 				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -154,6 +181,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
+
+			if ( !wcscmp(g_HeroPlayer.m_szName, L"") ) {
+				TCHAR *szMsg = L"캐릭터 정보가 없습니다.";
+				TextOut(hdc, 0, 0, szMsg,wcslen(szMsg));
+
+			}
+			else {
+				TCHAR szBuf[256];
+				swprintf_s(szBuf, 256, L"%s %d %d %d",
+					g_HeroPlayer.m_szName,
+					g_HeroPlayer.m_nHp,
+					g_HeroPlayer.m_nAtk,
+					g_HeroPlayer.m_nDep
+				);
+				TextOut(hdc, 0, 0, szBuf, wcslen(szBuf));
+
+			}
+
             EndPaint(hWnd, &ps);
         }
         break;
@@ -197,6 +242,19 @@ INT_PTR CALLBACK procDlgNew(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK )
 		{
+			TCHAR szBuf[256];
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_NAME), szBuf, 256);
+			wcscpy_s(g_HeroPlayer.m_szName,256,szBuf);
+			
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_HP), szBuf, 256);
+			g_HeroPlayer.m_nHp = _wtoi(szBuf);
+
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_ATK), szBuf, 256);
+			g_HeroPlayer.m_nAtk = _wtoi(szBuf);
+
+			GetWindowText(GetDlgItem(hDlg, IDC_EDIT_DEP), szBuf, 256);
+			g_HeroPlayer.m_nDep = _wtoi(szBuf);
+
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
