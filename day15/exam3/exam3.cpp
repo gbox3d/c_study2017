@@ -219,6 +219,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			DrawTilePalette(&g_GameMap, &grp, 9, 0);
 
+			//현제 선택된 타일 표시 
+			grp.TranslateTransform(160, 32);
+			grp.ScaleTransform(4, 4);					
+			DrawTile(&g_GameMap, &grp, 0, 0,g_nCurrentTileIndex-1);
+
+			grp.ResetTransform();
+			
+
             EndPaint(hWnd, &ps);
         }
         break;
@@ -319,6 +327,9 @@ INT_PTR CALLBACK procTileScriptDlg(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				token = wcstok(NULL, L", ");
 				idx = _wtoi(token);
 				SetTilePosition(&g_GameMap, x, y,  idx);
+			}
+			else if (!wcscmp(L"dtl", token)) {
+				//DrawTile(&g_GameMap,pGrp, int x, int y, int nTileIndex)
 			}
 			else {
 				MessageBox(hDlg, L"존재하지않는 스크립트입니다.", L"", MB_OK);
