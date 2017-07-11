@@ -304,7 +304,7 @@ INT_PTR CALLBACK procTileScriptDlg(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				y = _wtoi(token);
 				token = wcstok(NULL, L", ");
 				idx = _wtoi(token);
-				SetTilePosition(&g_GameMap, x, y, idx);
+				SetTilePosition(&g_GameMap, x, y,  idx);
 			}
 			else {
 				MessageBox(hDlg, L"존재하지않는 스크립트입니다.", L"", MB_OK);
