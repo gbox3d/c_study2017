@@ -55,5 +55,11 @@ void DrawMap(S_GAMEMAP *pMap, Graphics *pGrp, int xOrg, int yOrg)
 			//pGrp->DrawImage(pMap->m_ImageObj,Rect())
 		}
 	}
+}
 
+void DrawTilePalette(S_GAMEMAP *pMap, Graphics *pGrp, int xOrg, int yOrg)
+{
+	for (int i = 0; i < 8; i++) {
+		DrawTile(pMap, pGrp, xOrg + i, yOrg, i );
+	}
 }

@@ -189,9 +189,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		swprintf(szBuf, L"%d ,%d \n", mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight);
 		OutputDebugString(szBuf);
 
-		SetMapIndex(&g_GameMap, 
-			mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight,
-			g_nCurrentTileIndex);
+		if (mx < 128 && my < 128 ) {
+			SetMapIndex(&g_GameMap,
+				mx / g_GameMap.m_TileWidth, my / g_GameMap.m_TileHeight,
+				g_nCurrentTileIndex);
+		}
+		else if (my < 16 && mx > 144) {
+			swprintf(szBuf, L"%d \n", mx / g_GameMap.m_TileWidth);
+			OutputDebugString(szBuf);
+			g_nCurrentTileIndex = (mx / g_GameMap.m_TileWidth) - 8;
+		}
+		
 
 		InvalidateRect(hWnd, NULL, TRUE);
 
@@ -205,6 +213,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Graphics grp(hdc);
 			//DrawTile(&g_GameMap, &grp,0, 0, 1);
 			DrawMap(&g_GameMap,&grp,0,0);
+
+			Pen penBlack(Color(255,0,0,0));
+			grp.DrawRectangle(&penBlack, Rect(0, 0, 128, 128));
+
+			DrawTilePalette(&g_GameMap, &grp, 9, 0);
+
             EndPaint(hWnd, &ps);
         }
         break;
