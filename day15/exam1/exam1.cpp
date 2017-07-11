@@ -145,6 +145,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				fclose(fp);
 			}
 				break;
+			case IDM_EXAM_2:
+			{
+				FILE *fp;
+				fp = fopen("exam1.cpp", "r");
+				TCHAR szBuf[1024];
+				for (int i = 0; i < 20; i++) {
+					fgetws(szBuf,1024,fp);
+					OutputDebugString((TCHAR *)szBuf);
+					//win32_Printf(hWnd, L"%s", szBuf);
+				}
+
+				fclose(fp);
+
+			}
+				break;
+			case IDM_EXAM_3:
+			{
+				FILE *fp;
+				fp = fopen("b.txt", "w");
+				fputc('A', fp);
+				fclose(fp);
+			}
+				break;	
+			case IDM_EXAM_4:
+			{
+				FILE *fp;
+				fp = fopen("b.txt", "w");
+				fputs("hello file!", fp);
+				fclose(fp);
+			}
+				break;
+			case IDM_EXAM_5:
+			{
+				FILE *fp;
+				fp = fopen("b.txt", "a");
+				fputs("#append#", fp);
+				fclose(fp);
+			}
+			break;
+			case IDM_EXAM_6:
+			{
+				FILE *fp;
+				fp = fopen("b.txt", "r");
+				char szBuf[1024];
+				//SEEK_CUR 현재위치
+				//SEEK_END 파일끝
+				fseek(fp, 10, SEEK_SET); //파일시작 
+				int nRead = fread(szBuf, 10, 1, fp);
+				//win32_Printf(hWnd, L"%d , %s" ,nRead, szBuf);
+
+				int nPos = ftell(fp);
+
+				win32_Printf(hWnd, L"%d", nPos);
+
+				fclose(fp);
+			}
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
