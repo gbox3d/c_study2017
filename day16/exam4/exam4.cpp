@@ -178,7 +178,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		REAL matEm[16];
 
 		tempMat.SetElements(g_fScale, 0, 0, g_fScale, 160, 120);
-		grp.SetTransform(&tempMat);
+		grp.SetTransform(&tempMat);		
 
 		//grp.GetTransform(&tempMat);
 		//tempMat.GetElements(matEm);
@@ -187,7 +187,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//tempMat.GetElements(matEm);
 		//반지름 50짜리원 
 		grp.DrawEllipse(&pen, -50, -50, 100, 100);
-
 		grp.ResetTransform();
 
 		EndPaint(hWnd, &ps);
