@@ -4,11 +4,6 @@
 #include "stdafx.h"
 #include "gdip_exam1.h"
 
-#include <windows.h>
-#include <objidl.h>
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
 
 #define MAX_LOADSTRING 100
 
@@ -34,15 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
-
-	//----------------------------------------------------------------------
-	//gdi plus 초기화 코드 
-	GdiplusStartupInput gdiplusStartupInput;
-	ULONG_PTR           gdiplusToken;
-
-	// Initialize GDI+.
-	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-	//-----------------------------------------------------------------------
+	plusEngine::startUpGdiPlus();
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -69,10 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
-	//--------------------------------------
-	//gdi plus 종료코드 
-	GdiplusShutdown(gdiplusToken);
-	//--------------------------------------
+	plusEngine::CloseGdiPlus();
 
     return (int) msg.wParam;
 }
@@ -178,7 +162,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			graphics.DrawRectangle(&pen, Rect(200,0,100,100));			
 
 			SolidBrush brush(Color(0, 255, 0));
-			graphics.FillEllipse(&brush,0,100,200,100);			
+			graphics.FillEllipse(&brush,0,100,200,100);	
+
+			plusEngine::printf(&graphics, 100, 100, L"안녕하세요 %s 입니다.", L"쁠라스");
 
             EndPaint(hWnd, &ps);
         }
