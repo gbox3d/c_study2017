@@ -17,96 +17,6 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-#include <windows.h>
-#include <objidl.h>
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
-
-DWORD g_dwGdiLoopFsm = 0; //루프상태제어
-void GDIPLUS_Loop(MSG &msg)
-{
-	//----------------------------------------------------------------------
-	//gdi plus 초기화 코드 
-	GdiplusStartupInput gdiplusStartupInput;
-	ULONG_PTR           gdiplusToken;
-
-	// Initialize GDI+.
-	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-	//-----------------------------------------------------------------------
-
-	{
-		bool quit = false;
-		//gdiplus 가 셧다운 되기전에 객체들이 삭제되어야 하므로 일부러 지역변수선언을 한단계 내려서 사용했다.
-		Gdiplus::Rect rectScreen(0, 0, 320, 240);
-		Bitmap bmpMem(rectScreen.Width, rectScreen.Height);
-		Graphics* graphBackBuffer = Graphics::FromImage(&bmpMem);
-
-		Pen penRed(Color(255, 0, 0));
-		Gdiplus::SolidBrush brushBlack(Color(0, 0, 0));
-		Gdiplus::SolidBrush brushWhite(Color(255, 255, 255));
-		FontFamily  fontFamily(L"굴림");
-		Font        font(&fontFamily, 12, FontStyleRegular, UnitPixel);
-		static LONG prev_tick;
-		static SYSTEMTIME time;
-
-		while (!quit) {
-
-			if (PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE))
-			{
-				if (msg.message == WM_QUIT)
-					quit = true;
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-			else {
-				switch (g_dwGdiLoopFsm)
-				{
-				case 0:
-					break;
-				case 10:
-				{
-					GetSystemTime(&time);
-					LONG time_ms = (time.wSecond * 1000) + time.wMilliseconds;
-					float fDelta = (time_ms - prev_tick) / 1000.f;
-					prev_tick = time_ms;
-
-					// Get DC
-					HDC hdc = GetDC(msg.hwnd);
-					{
-						Graphics graphics(hdc);
-						graphBackBuffer->FillRectangle(&brushBlack, rectScreen);
-
-						double fps = 9999;
-						if (fDelta > 0.0) {
-							fps = 1.0 / fDelta;
-						}
-
-						TCHAR szBuf[256];
-						swprintf_s(szBuf, L" %lf", fps);
-						graphBackBuffer->DrawString(szBuf, -1, &font, PointF(0, 0), &brushWhite);
-
-						graphics.DrawImage(&bmpMem, rectScreen);
-					}
-					ReleaseDC(msg.hwnd, hdc);
-				}
-				break;
-				default:
-					break;
-				}
-
-
-			}
-		}
-	}
-
-	//--------------------------------------
-	//gdi plus 종료코드 
-	GdiplusShutdown(gdiplusToken);
-	//--------------------------------------
-
-
-}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -132,9 +42,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_GDIPLUS_TEMP));
 
 	MSG msg;
-
-	// 기본 메시지 루프입니다.
-	GDIPLUS_Loop(msg);
+	// 기본 메시지 루프입니다.	
+	plusEngine::GDIPLUS_Loop(msg, Rect(0, 0, 320, 240));
 
 
 	return (int)msg.wParam;
@@ -196,20 +105,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;
 }
 
-//
-//  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  목적:  주 창의 메시지를 처리합니다.
-//
-//  WM_COMMAND  - 응용 프로그램 메뉴를 처리합니다.
-//  WM_PAINT    - 주 창을 그립니다.
-//  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
-//
-//
+
+//랜더링 루프콜백함수
+void OnPlusEngineRender(double fDelta, Graphics *grp)
+{
+	static double accTick = 0;
+	accTick += fDelta;
+	grp->Clear(Color(200, 191, 231));
+	plusEngine::printf(grp, 20, 100, L"안녕하세요 더블버퍼링일 겁니다 %lf",accTick);
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
+	
 	case WM_COMMAND:
 	{
 		int wmId = LOWORD(wParam);
@@ -217,13 +127,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wmId)
 		{
 		case IDM_APP_START:
-			g_dwGdiLoopFsm = 10;
+			//랜더링루프시작 
+			plusEngine::fpOnRender = OnPlusEngineRender;
 			break;
 		case IDM_ABOUT:
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
 		case IDM_EXIT:
-			g_dwGdiLoopFsm = 0;
+			
 			DestroyWindow(hWnd);
 			break;
 		default:

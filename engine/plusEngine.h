@@ -9,4 +9,9 @@ namespace plusEngine {
 	extern void startUpGdiPlus();
 	extern void CloseGdiPlus();
 	extern void printf(Graphics *grp, int x, int y, TCHAR *fmt, ...);
+
+	//루프제어 
+	extern void(*fpOnLoop)(double);
+	extern void(*fpOnRender)(double, Graphics*);
+	extern void GDIPLUS_Loop(MSG &msg, Gdiplus::Rect rectScreen);
 }
