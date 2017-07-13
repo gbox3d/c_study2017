@@ -259,14 +259,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 
-			
+			for (int j = 0; j < 4; j++) {
+				irr::core::line2df line1(worldpos_obj2[j], worldpos_obj2[(j+1)%4]);
+				for (int i = 0; i < 4; i++) {
+					irr::core::line2df line2;
+					line2.setLine(worldpos_obj1[i], worldpos_obj1[(i + 1) % 4]);
 
-			
-			
+					irr::core::vector2df colPt;
+					if (line1.intersectWith(line2, colPt)) {
+						grp.DrawRectangle(&pen, colPt.X - 4, colPt.Y - 4, 8.0, 8.0);
+					}
+				}
+			}			
 
 			grp.ResetTransform();
-
-
 
             EndPaint(hWnd, &ps);
         }
