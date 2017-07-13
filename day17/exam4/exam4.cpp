@@ -49,18 +49,33 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 GameObject g_ObjMissile;
 
+GameObject *g_ObjMissiles[1024];
+int g_nMissileCount;
+Image *g_pImgMissile;
+
 void OnCreate(HWND hWnd)
 {
 	g_ObjMissile.m_fRotation = 0;
 	g_ObjMissile.m_fSpeed = 0;
 	g_ObjMissile.m_vPosition = irr::core::vector2df(0, 0);
-	g_ObjMissile.m_pImg = new Image(L"../../res/missile/spr_missile.png");
+	g_pImgMissile = g_ObjMissile.m_pImg = new Image(L"../../res/missile/spr_missile.png");
+
+	for (int i = 0; i < 1024; i++)
+	{
+		g_ObjMissiles[i] = NULL;
+	}
+	g_nMissileCount = 0;
 
 }
 
 void OnApply(double fDelta)
 {
 	GameObject_Apply(&g_ObjMissile, fDelta);
+	for (int i = 0; i < 1024; i++) {
+		if (g_ObjMissiles[i]) {
+			GameObject_Apply(g_ObjMissiles[i],fDelta);
+		}
+	}
 
 }
 
@@ -75,6 +90,12 @@ void OnRender(double fDelta,Graphics *grp)
 	grp->SetTransform(&Matrix(1, 0, 0, 1, 160, 120));
 
 	GameObject_Draw(&g_ObjMissile, *grp);
+
+	for (int i = 0; i < 1024; i++) {
+		if (g_ObjMissiles[i]) {
+			GameObject_Draw(g_ObjMissiles[i], *grp);
+		}
+	}
 
 	grp->ResetTransform();
 }
@@ -149,15 +170,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_LBUTTONDOWN:
+	{
+		int mx = LOWORD(lParam);
+		int my = HIWORD(lParam);
+		//g_ObjMissile.m_vPosition.set(mx-160,my-120);
+
+		for (int i = 0; i < 1024; i++) {
+			if (g_ObjMissiles[i] == NULL) {
+				GameObject *pObj = (GameObject *)malloc(sizeof(GameObject));
+				pObj->m_pImg = g_pImgMissile;
+				pObj->m_fRotation = 0;
+				pObj->m_fSpeed = 10.0;
+				pObj->m_vPosition = irr::core::vector2df(mx - 160, my - 120);
+				g_ObjMissiles[i] = pObj;
+				break;
+			}
+		}
+
+
+	}
+		break;
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
 		case VK_RIGHT:
-			g_ObjMissile.m_fSpeed += 0.5;
+			g_ObjMissile.m_fSpeed += 0.5 ;
 			break;
 		case VK_LEFT:
 			g_ObjMissile.m_fSpeed -= 0.5;
-			break;
+			break;			
 		default:
 			break;
 		}

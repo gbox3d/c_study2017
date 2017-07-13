@@ -3,7 +3,7 @@ struct GameObject
 {
 	irr::core::vector2df m_vPosition;
 	irr::f64 m_fRotation;
-	irr::f64 m_fSpeed;
+	irr::f64 m_fSpeed;	
 
 	Image *m_pImg;
 };
