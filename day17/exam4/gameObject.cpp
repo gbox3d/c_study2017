@@ -3,11 +3,30 @@
 
 void GameObject_Apply(GameObject *pThis,irr::f64 fDelta)
 {
-	irr::core::vector2df vDir(1, 0);
+	
 
-	vDir.rotateBy(pThis->m_fRotation);
+	switch (pThis->m_nFSM)
+	{
+	case 0:
+		pThis->m_nFSM = 10;
+		break;
+	case 10:
+	{
+		irr::core::vector2df vDir(1, 0);
+		vDir.rotateBy(pThis->m_fRotation);
+		pThis->m_vPosition += (vDir * (pThis->m_fSpeed * fDelta));
+		pThis->m_fFuel -= (fDelta * 1);
 
-	pThis->m_vPosition += (vDir * (pThis->m_fSpeed * fDelta) );
+		if (pThis->m_fFuel < 0) {
+			pThis->m_nFSM = 20;
+		}
+	}
+	case 20:		
+		break;
+	default:
+		break;
+	}
+
 
 }
 

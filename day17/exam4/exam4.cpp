@@ -74,6 +74,12 @@ void OnApply(double fDelta)
 	for (int i = 0; i < 1024; i++) {
 		if (g_ObjMissiles[i]) {
 			GameObject_Apply(g_ObjMissiles[i],fDelta);
+
+			if (g_ObjMissiles[i]->m_nFSM == 20) {
+				delete g_ObjMissiles[i];
+				g_ObjMissiles[i] = NULL;
+			}
+
 		}
 	}
 
@@ -179,11 +185,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		for (int i = 0; i < 1024; i++) {
 			if (g_ObjMissiles[i] == NULL) {
 				GameObject *pObj = (GameObject *)malloc(sizeof(GameObject));
+				pObj->m_nFSM = 0;
 				pObj->m_pImg = g_pImgMissile;
 				pObj->m_fRotation = 0;
 				pObj->m_fSpeed = 10.0;
+				pObj->m_fFuel = 5;
 				pObj->m_vPosition = irr::core::vector2df(mx - 160, my - 120);
 				g_ObjMissiles[i] = pObj;
+
 				break;
 			}
 		}
