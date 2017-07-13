@@ -42,18 +42,41 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_EXAM4));
 
     MSG msg;
-
-    // 기본 메시지 루프입니다.
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
+	plusEngine::GDIPLUS_Loop(msg, Rect(0,0,320, 240));   
 
     return (int) msg.wParam;
+}
+
+GameObject g_ObjMissile;
+
+void OnCreate(HWND hWnd)
+{
+	g_ObjMissile.m_fRotation = 0;
+	g_ObjMissile.m_fSpeed = 0;
+	g_ObjMissile.m_vPosition = irr::core::vector2df(0, 0);
+	g_ObjMissile.m_pImg = new Image(L"../../res/missile/spr_missile.png");
+
+}
+
+void OnApply(double fDelta)
+{
+	GameObject_Apply(&g_ObjMissile, fDelta);
+
+}
+
+void OnRender(double fDelta,Graphics *grp)
+{
+	grp->Clear(Color(200, 191, 231));
+	Pen pen(Color(0, 0, 0));
+	//화면 눈금표시 
+	grp->DrawLine(&pen, 0, 120, 320, 120);
+	grp->DrawLine(&pen, 160, 0, 160, 240);
+	grp->DrawRectangle(&pen, 0, 0, 320, 240);
+	grp->SetTransform(&Matrix(1, 0, 0, 1, 160, 120));
+
+	GameObject_Draw(&g_ObjMissile, *grp);
+
+	grp->ResetTransform();
 }
 
 
@@ -126,12 +149,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_RIGHT:
+			g_ObjMissile.m_fSpeed += 0.5;
+			break;
+		case VK_LEFT:
+			g_ObjMissile.m_fSpeed -= 0.5;
+			break;
+		default:
+			break;
+		}
+		break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
+			case IDM_START:
+				OnCreate(hWnd);
+				plusEngine::fpOnLoop = OnApply;
+				plusEngine::fpOnRender = OnRender;
+				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
