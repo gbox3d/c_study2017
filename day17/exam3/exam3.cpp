@@ -125,6 +125,32 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 irr::core::vector2df g_vObjPos;
 irr::f64 g_fObjRotation;
 
+void drawObject(Graphics *grp, irr::core::vector2df *pObjPloy,Pen *pen,irr::core::vector2df pos,irr::f64 fRotation)
+{
+	//irr::core::vector2df *pObjPloy = testObjPloy1;
+
+	Matrix tempMat;
+	grp->GetTransform(&tempMat);
+	grp->TranslateTransform(pos.X, pos.Y);
+	grp->RotateTransform(fRotation);
+
+	Matrix wMat;
+	grp->GetTransform(&wMat);
+
+	for (int i = 0; i < 4; i++) {
+		irr::core::vector2df start = pObjPloy[i];
+		irr::core::vector2df end = pObjPloy[(i + 1) % 4];
+		grp->DrawLine(pen, start.X, start.Y, end.X, end.Y);
+
+		PointF _start(start.X, start.Y);
+		wMat.TransformPoints(&_start);
+		plusEngine::printf(grp, start.X, start.Y, L"(%.1lf,%.1lf)", _start.X, _start.Y);
+
+	}
+
+	grp->SetTransform(&tempMat);
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -184,6 +210,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				irr::core::vector2df(40,-20),
 				irr::core::vector2df(-40,-20)
 			};
+			
 
 			Graphics grp(hdc);
 			Pen pen(Color(0, 0, 0));
@@ -193,25 +220,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			grp.DrawRectangle(&pen, 0, 0, 320, 240);
 			grp.SetTransform(&Matrix(1, 0, 0, 1, 160, 120));
 
-			{
-				irr::core::vector2df *pObjPloy = testObjPloy1;
+			drawObject(&grp, testObjPloy1, &pen, g_vObjPos, g_fObjRotation);
 
-				Matrix tempMat;
-				grp.GetTransform(&tempMat);
-				grp.TranslateTransform(g_vObjPos.X, g_vObjPos.Y);
-				grp.RotateTransform(g_fObjRotation);
-
-				for (int i = 0; i < 4; i++) {
-					irr::core::vector2df start = pObjPloy[i];					
-					irr::core::vector2df end = pObjPloy[(i + 1)%4];
-					grp.DrawLine(&pen, start.X, start.Y, end.X, end.Y);
-
-					plusEngine::printf(&grp, start.X, start.Y, L"(%.1lf,%.1lf)", start.X, start.Y);
-
-				}
-
-				grp.SetTransform(&tempMat);
-			}
+			drawObject(&grp, testObjPloy1, &pen, irr::core::vector2df(-100,-100), 30);
+			
 
 			grp.ResetTransform();
 
