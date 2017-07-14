@@ -1,8 +1,8 @@
-// math_exam1.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// math_exam4_matrix.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "math_exam1.h"
+#include "math_exam4_matrix.h"
 
 #define MAX_LOADSTRING 100
 
@@ -27,11 +27,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // TODO: 여기에 코드를 입력합니다.
 	plusEngine::startUpGdiPlus();
-	
-
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_MATH_EXAM1, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_MATH_EXAM4_MATRIX, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -40,8 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MATH_EXAM1));
-		
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MATH_EXAM4_MATRIX));
 
     MSG msg;
 
@@ -55,7 +52,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 	plusEngine::CloseGdiPlus();
-
     return (int) msg.wParam;
 }
 
@@ -77,10 +73,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MATH_EXAM1));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MATH_EXAM4_MATRIX));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_MATH_EXAM1);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_MATH_EXAM4_MATRIX);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -125,33 +121,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-
-irr::f64 g_fAngle = 0;
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
-    {	
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-		case VK_LEFT:
-			g_fAngle += 5;
-			break;
-		default:
-			break;
-		}
-		InvalidateRect(hWnd, NULL, true);
-		break;
+    {
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다.
             switch (wmId)
             {
-			case IDM_EXAM_1:
-				InvalidateRect(hWnd, NULL, true);
-				break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -169,22 +148,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
 
-			irr::core::vector2df vOrigin(160, 120);
-			irr::core::vector2df vDir(1, 0);
+			Graphics grp(hdc);
+			Pen pen(Color(0, 0, 0));
+			//화면 눈금표시 
+			grp.DrawLine(&pen, 0, 120, 320, 120);
+			grp.DrawLine(&pen, 160, 0, 160, 240);
+			grp.DrawRectangle(&pen, 0, 0, 320, 240);
+			Matrix orginMat(1, 0, 0, 1, 160, 120);
+			grp.SetTransform(&orginMat);
 
-			Graphics graphics(hdc);
+			irr::core::vector3df vDir(1,0,0);			
 
-			Pen      pen(Color(255, 255, 0, 0));
+			irr::core::matrix4 mat;
+			mat.setRotationDegrees(irr::core::vector3df(0,0,45));
+			mat.transformVect(vDir);
+			vDir *= 30;
 
-			vDir.rotateBy(g_fAngle);
+			grp.DrawLine(&pen, PointF(0, 0), plusEngine::util::irr2Point(vDir));
 			
-			irr::core::vector2df vTarget = (vDir * 50) + vOrigin;
-			
-			graphics.DrawLine(&pen,
-				plusEngine::util::irr2Point(vOrigin),
-				plusEngine::util::irr2Point(vTarget)
-				);
-			
+			grp.ResetTransform();
 
             EndPaint(hWnd, &ps);
         }

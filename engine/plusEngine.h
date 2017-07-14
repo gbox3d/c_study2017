@@ -14,4 +14,21 @@ namespace plusEngine {
 	extern void(*fpOnLoop)(double);
 	extern void(*fpOnRender)(double, Graphics*);
 	extern void GDIPLUS_Loop(MSG &msg, Gdiplus::Rect rectScreen);
+
+	namespace util {
+
+		inline PointF irr2Point(irr::core::vector2df &a)
+		{
+			PointF b;
+			b.X = a.X;
+			b.Y = a.Y;
+
+			return b;
+		}
+		inline PointF irr2Point(irr::core::vector3df &a)
+		{			
+			return irr2Point(irr::core::vector2df(a.X,a.Y));
+		}
+
+	}
 }

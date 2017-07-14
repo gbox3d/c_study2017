@@ -114,8 +114,7 @@ namespace plusEngine {
 		//gdi plus 종료코드 
 		GdiplusShutdown(gdiplusToken);
 		//--------------------------------------
-
-
 	}
+		
 
 }

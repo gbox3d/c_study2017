@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{7CCC95F8-5240-441E-897A-5EF46E2F77E8}</ProjectGuid>
+    <ProjectGuid>{CB5F062D-BAA6-482C-8F40-C31B901B875B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>math_exam1</RootNamespace>
+    <RootNamespace>math_exam5_qt</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,14 +139,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\plusEngine.h" />
-    <ClInclude Include="math_exam1.h" />
+    <ClInclude Include="math_exam5_qt.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\engine\plusEngine.cpp" />
-    <ClCompile Include="math_exam1.cpp" />
+    <ClCompile Include="math_exam5_qt.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -155,10 +155,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="math_exam1.rc" />
+    <ResourceCompile Include="math_exam5_qt.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="math_exam1.ico" />
+    <Image Include="math_exam5_qt.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

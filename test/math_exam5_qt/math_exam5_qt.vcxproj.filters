@@ -27,7 +27,7 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="math_exam1.h">
+    <ClInclude Include="math_exam5_qt.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\plusEngine.h">
@@ -38,7 +38,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="math_exam1.cpp">
+    <ClCompile Include="math_exam5_qt.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\..\engine\plusEngine.cpp">
@@ -46,7 +46,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="math_exam1.rc">
+    <ResourceCompile Include="math_exam5_qt.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -54,7 +54,7 @@
     <Image Include="small.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="math_exam1.ico">
+    <Image Include="math_exam5_qt.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

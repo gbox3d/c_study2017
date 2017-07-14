@@ -118,20 +118,32 @@ DWORD WINAPI myThreadFunc(LPVOID pParam)
 	
 	HDC hdc = GetDC(g_hWnd);
 	Graphics grp(hdc);
-	
-	for (int i = 0; i < 100; i++) {
+	int i = 0;
+	while (1) {
 
-		SolidBrush brush(Color(255, 0, 0));
-		plusEngine::printf(&grp, rand() % 500, rand() % 500, L"%d", i);
-		Sleep(1000);
+		//SolidBrush brush(Color(255, 0, 0));
+		
+		plusEngine::printf(&grp, rand() % 500, rand() % 500, L"%d", i++);
+		Sleep(500);
 	}
-
-
 	ReleaseDC(g_hWnd,hdc);	
-
 	return 0;
-
 }
+
+DWORD WINAPI myThreadFunc2(LPVOID pParam)
+{
+
+	HDC hdc = GetDC(g_hWnd);
+	Graphics grp(hdc);
+	SolidBrush brush(Color(255, 0, 0));
+	while(1) {
+		grp.FillRectangle(&brush, rand() % 500, rand() % 500, 32, 32);
+		Sleep(200);
+	}
+	ReleaseDC(g_hWnd, hdc);
+	return 0;
+}
+
 
 //
 //  ÇÔ¼ö: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -154,7 +166,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 	{
 		g_hWnd = hWnd;
-		g_hThreadHandle = CreateThread(NULL, 0, myThreadFunc, NULL, 0, &g_ThreadID);
+		CreateThread(NULL, 0, myThreadFunc, NULL, 0, &g_ThreadID);
+		CreateThread(NULL, 0, myThreadFunc2, NULL, 0, &g_ThreadID);
 	}
 		break;
     case WM_COMMAND:
