@@ -30,5 +30,20 @@ namespace plusEngine {
 			return irr2Point(irr::core::vector2df(a.X,a.Y));
 		}
 
+		inline RectF irr2Rect(irr::core::vector2df &pos, irr::core::vector2df &size)
+		{
+			RectF c;
+			c.X = pos.X;
+			c.Y = pos.Y;
+			c.Width = size.X;
+			c.Height = size.Y;
+
+			return c;			
+		}
+		inline RectF irr2Rect(irr::core::vector3df &pos, irr::core::vector3df &size)
+		{		
+			return irr2Rect(irr::core::vector2df(pos.X,pos.Y), irr::core::vector2df(size.X, size.Y));
+		}
+
 	}
 }
