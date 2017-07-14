@@ -22,5 +22,6 @@
 #include "../../engine/irrlicht/include/irrlicht.h"
 #include "../../engine/plusEngine.h"
 
-#include "game.h"
 #include "ObjectPlayer.h"
+#include "game.h"
+

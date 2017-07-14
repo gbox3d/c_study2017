@@ -118,6 +118,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HANDLE hTimer;
     switch (message)
     {
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_LEFT:
+			g_objPlayer.m_vPosition.X -= 5;
+			break;
+		case VK_RIGHT:
+			g_objPlayer.m_vPosition.X += 5;
+			break;
+		default:
+			break;
+		}
+		break;
 	case WM_CREATE:
 		hTimer = (HANDLE)SetTimer(hWnd, 1, 1000, NULL); //1√ »ƒø°....
 		break;
