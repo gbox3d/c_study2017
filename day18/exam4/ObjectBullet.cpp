@@ -17,6 +17,7 @@ void ObjectBullet_OnApply(S_ObjectBullet *pThis,double fDelta)
 
 		//총알크기 + 비행기 크기
 		if (fDist < (pThis->m_fSize + 12)) {
+			AddEffectBulletDie(pThis->m_vPosition);
 			pThis->m_nFSM = 999;
 		}
 		//라이프타임 검사 

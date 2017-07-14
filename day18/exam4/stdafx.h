@@ -24,5 +24,6 @@
 
 #include "ObjectPlayer.h"
 #include "ObjectBullet.h"
+#include "ObjectEffectBulletDie.h"
 #include "game.h"
 
