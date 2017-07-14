@@ -2,11 +2,12 @@
 
 HWND g_hWnd;
 
+BYTE g_KeyStatus[256];
 S_ObjectPlayer g_objPlayer;
 
 void OnLoop(double fDelta)
 {
-
+	S_ObjectPlayer_OnApply(&g_objPlayer, fDelta);
 }
 
 void OnRender(double fDelta,Graphics *pGrp)
@@ -38,6 +39,10 @@ void OnCreate(HWND hWnd)
 	g_hWnd = hWnd;
 	plusEngine::fpOnLoop = OnLoop;
 	plusEngine::fpOnRender = OnRender;
+	//키상태 초기화 
+	for (int i = 0; i < 256; i++) {
+		g_KeyStatus[i] = 0;
+	}
 
 	Image *pImg = new Image(L"../../res/spaceship_crop.png");
 
