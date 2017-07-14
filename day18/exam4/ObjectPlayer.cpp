@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 void S_ObjectPlayer_OnApply(S_ObjectPlayer *pThis, double fDelta)
-{
+{	
+
 	if (g_KeyStatus[VK_LEFT]) {
 		pThis->m_vPosition += fDelta*10 * irr::core::vector2df(-1, 0);
 	}

@@ -7,6 +7,7 @@ struct S_ObjectBullet
 	irr::f64 m_fVelocity;
 	irr::f64 m_fSize;
 	int m_nFSM;
+	double m_flifeTime;
 };
 
 extern void ObjectBullet_Setup(S_ObjectBullet *pThis, irr::core::vector2df &vStartPos,

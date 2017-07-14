@@ -2,17 +2,35 @@
 
 void ObjectBullet_OnApply(S_ObjectBullet *pThis,double fDelta)
 {
+	pThis->m_flifeTime += fDelta;
+
 	switch (pThis->m_nFSM)
 	{
 	case 0: // ready
 		pThis->m_nFSM = 10;
 		break;
 	case 10: //go
+	{
 		pThis->m_vPosition += pThis->m_vDirection*pThis->m_fVelocity*fDelta;
+
+		irr::f64 fDist = (pThis->m_vPosition - g_objPlayer.m_vPosition).getLength();
+
+		//총알크기 + 비행기 크기
+		if (fDist < (pThis->m_fSize + 12)) {
+			pThis->m_nFSM = 999;
+		}
+		//라이프타임 검사 
+		if (pThis->m_flifeTime > 10) {
+
+			pThis->m_nFSM = 999;
+		}
+	}	
 		break;
 	default:
 		break;
 	}
+
+	
 
 }
 void ObjectBullet_OnRender(S_ObjectBullet *pThis, Graphics *pGrp)
@@ -37,4 +55,5 @@ void ObjectBullet_Setup(S_ObjectBullet *pThis,irr::core::vector2df &vStartPos,
 	pThis->m_vPosition = vStartPos;
 	pThis->m_vDirection = vTaegetPos - vStartPos;
 	pThis->m_vDirection.normalize();
+	pThis->m_flifeTime = 0;
 }
