@@ -23,3 +23,4 @@
 #include "../../engine/plusEngine.h"
 
 #include "game.h"
+#include "ObjectPlayer.h"
