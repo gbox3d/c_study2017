@@ -193,7 +193,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else {
 			grp.DrawEllipse(&pen, targetPos.X - 16, targetPos.Y - 16, 32., 32.);
 		}
-
+		 
 		//box
 		RectF a(targetPos.X - 16, targetPos.Y - 16, 32., 32.), b(g_vTest.X - 16, g_vTest.Y - 16, 32., 32.);
 		
