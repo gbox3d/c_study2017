@@ -4,10 +4,13 @@ HWND g_hWnd;
 
 BYTE g_KeyStatus[256];
 S_ObjectPlayer g_objPlayer;
+S_ObjectBullet g_TestBullet;
+S_ObjectBullet g_Bullet_list[16];
 
 void OnLoop(double fDelta)
 {
 	S_ObjectPlayer_OnApply(&g_objPlayer, fDelta);
+	//ObjectBullet_OnApply(&g_TestBullet, fDelta);
 }
 
 void OnRender(double fDelta,Graphics *pGrp)
@@ -29,11 +32,13 @@ void OnRender(double fDelta,Graphics *pGrp)
 	pGrp->SetTransform(&originMat);	
 
 	S_ObjectPlayer_OnRender(&g_objPlayer, pGrp);
+	//ObjectBullet_OnRender(&g_TestBullet, pGrp);
 	
 	pGrp->ResetTransform();
 
 }
 
+Image *g_pImgSpaceShip;
 void OnCreate(HWND hWnd)
 {
 	g_hWnd = hWnd;
@@ -44,8 +49,14 @@ void OnCreate(HWND hWnd)
 		g_KeyStatus[i] = 0;
 	}
 
-	Image *pImg = new Image(L"../../res/spaceship_crop.png");
+	g_pImgSpaceShip = new Image(L"../../res/spaceship_crop.png");
 
-	S_ObjectPlayer_Setup(&g_objPlayer, irr::core::vector2df(0, 0), pImg);
+	S_ObjectPlayer_Setup(&g_objPlayer, irr::core::vector2df(0, 0), g_pImgSpaceShip);
+	//ObjectBullet_Setup(&g_TestBullet, irr::core::vector2df(-160, -120), g_objPlayer.m_vPosition, 8, 30);
 
+}
+
+void OnDestory(HWND hWnd)
+{
+	delete g_pImgSpaceShip;
 }
