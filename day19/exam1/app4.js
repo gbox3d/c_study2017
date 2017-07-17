@@ -7,5 +7,5 @@ udp_socket.on("message", function (msg, rinfo) {
 });
 
 
-strMsg = "hello udp"
+strMsg = "Anybody"
 udp_socket.send(Buffer(strMsg), 0, strMsg.length, 3333, '192.168.0.7');
