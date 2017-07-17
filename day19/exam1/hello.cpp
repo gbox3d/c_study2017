@@ -16,7 +16,7 @@ namespace demo {
 	}
 
 	void init(Local<Object> exports) {
-		NODE_SET_METHOD(exports, "hello", Method);
+		NODE_SET_METHOD(exports, "hello_func", Method);
 	}
 
 	NODE_MODULE(addon, init)
