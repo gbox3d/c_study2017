@@ -22,7 +22,7 @@ int main()
 	}
 
 	if ( (s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR) {
-		printf("error SOCKET_ERROR\n"); 
+		printf("error SOCKET_ERROR\n");  
 		exit(EXIT_FAILURE);
 	}
 
