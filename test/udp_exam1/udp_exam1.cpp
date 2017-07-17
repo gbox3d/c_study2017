@@ -5,7 +5,7 @@
 
 //보내고 받는 버전 bind가 없다.
 
-#define SERVER "127.168.0.7"  //ip address of udp server
+#define SERVER "192.168.0.7"  //ip address of udp server
 #define BUFLEN 512  //Max length of buffer
 #define PORT 3333   //The port on which to listen for incoming data
 
@@ -42,10 +42,20 @@ int main(void)
 	//start communication
 	while (1)
 	{
+		int xpos,ypos;
 		printf("Enter message : ");
 		
 		//gets(message);
-		scanf("%s", message);
+		scanf("%d %d", &xpos,&ypos);
+		
+		cJSON *root = NULL;
+		root = cJSON_CreateObject();
+		cJSON_AddNumberToObject(root, "xpos", xpos);
+		cJSON_AddNumberToObject(root, "ypos", ypos);
+		char szBuf[512];
+		cJSON_PrintPreallocated(root, message, BUFLEN, 0);
+
+		printf("send message : \n %s \n", message);
 
 		//send the message
 		if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)

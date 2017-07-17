@@ -1,8 +1,8 @@
-// cjson_exam.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// udp_exam4_packetGen.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "cjson_exam.h"
+#include "udp_exam4_packetGen.h"
 
 #define MAX_LOADSTRING 100
 
@@ -17,6 +17,8 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+int g_nSocketID;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -26,11 +28,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
-	plusEngine::startUpGdiPlus();
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_CJSON_EXAM, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_UDP_EXAM4_PACKETGEN, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -39,7 +40,29 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CJSON_EXAM));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_UDP_EXAM4_PACKETGEN));
+
+	//struct sockaddr_in si_other;
+	//int s, slen = sizeof(si_other);
+	//char buf[BUFLEN];
+	//char message[BUFLEN];
+	WSADATA wsa;
+
+	//Initialise winsock
+	OutputDebugStringA("\nInitialising Winsock...");
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	{
+		OutputDebugStringA("Failed. Error Code : ");
+		exit(EXIT_FAILURE);
+	}
+	OutputDebugStringA("Initialised.\n");
+
+	//create socket
+	if ((g_nSocketID = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
+	{
+		OutputDebugStringA("socket() failed with error");
+		exit(EXIT_FAILURE);
+	}
 
     MSG msg;
 
@@ -52,7 +75,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-	plusEngine::CloseGdiPlus();
+
+	closesocket(g_nSocketID);
+	WSACleanup();
 
     return (int) msg.wParam;
 }
@@ -75,12 +100,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CJSON_EXAM));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_UDP_EXAM4_PACKETGEN));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CJSON_EXAM);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_UDP_EXAM4_PACKETGEN);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	
 
     return RegisterClassExW(&wcex);
 }
@@ -106,7 +132,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
-
+   MoveWindow(hWnd, 0, 0, 320, 240, TRUE);
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -127,9 +153,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-	case WM_CREATE:
+	case WM_LBUTTONDOWN:
 	{
+		int ypos = HIWORD(lParam);
+		int xpos = LOWORD(lParam);
+
+		cJSON *root = NULL;
+		root = cJSON_CreateObject();
+		cJSON_AddNumberToObject(root, "xpos", xpos);
+		cJSON_AddNumberToObject(root, "ypos", ypos);
+		char szBuf[512];
+		cJSON_PrintPreallocated(root, szBuf, 512, 0);
 		
+		OutputDebugStringA(szBuf);
+		OutputDebugStringA("\n");
+
+		sockaddr_in si_other;
+		int slen = sizeof(si_other);
+		memset((char *)&si_other, 0, slen);
+		si_other.sin_family = AF_INET;
+		si_other.sin_port = htons(3333);
+		si_other.sin_addr.S_un.S_addr = inet_addr("192.168.0.7");
+
+		if (sendto(g_nSocketID, szBuf, strlen(szBuf), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+		{
+			OutputDebugStringA("sendto() failed with error code ");
+			//exit(EXIT_FAILURE);
+		}
 
 	}
 		break;
@@ -155,33 +205,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
-
-			char *my_json_string = "{\"testInt\":1,\"testFloat\":3.14,\"testStr\":\"hello\"}";
-			cJSON * root = cJSON_Parse(my_json_string);
-
-			cJSON *testInt = cJSON_GetObjectItemCaseSensitive(root, "testInt");
-			cJSON *testFloat = cJSON_GetObjectItemCaseSensitive(root, "testFloat");
-			cJSON *testStr = cJSON_GetObjectItemCaseSensitive(root, "testStr");
-
-			//char -> wchar_t
-			TCHAR szBuf[256];
-			mbstowcs(szBuf, testStr->valuestring, strlen(testStr->valuestring) + 1);
-			Graphics grp(hdc);
-			plusEngine::printf(&grp, 10, 10, L"%d %f %s", testInt->valueint, testFloat->valuedouble,szBuf);
-
-			{
-				cJSON *root = NULL;
-				root = cJSON_CreateObject();
-				cJSON_AddNumberToObject(root, "xpos", 192);
-				cJSON_AddNumberToObject(root, "ypos", 112);
-				char szBuf[512];
-				cJSON_PrintPreallocated(root, szBuf, 512, 0);
-				TCHAR szBufw[256];
-				mbstowcs(szBufw, szBuf,512);
-				plusEngine::printf(&grp, 10, 30, L"%s",szBufw);
-			}
-
-
             EndPaint(hWnd, &ps);
         }
         break;

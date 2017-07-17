@@ -17,14 +17,8 @@
 #include <memory.h>
 #include <tchar.h>
 
-#include <stdio.h>
-#include <string.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+#include<winsock2.h>
+#pragma comment(lib,"ws2_32.lib") //Winsock Library
 #include "../../cjson/cJSON.h"
-#include "../../engine/irrlicht/include/irrlicht.h"
-#include "../../engine/plusEngine.h"
-
-#include <comdef.h>  // you will need this  for  _bstr_t
-#include "../../cjson/cJSON.h"
-

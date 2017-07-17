@@ -1,8 +1,8 @@
-// cjson_exam.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
+// udp_exam3.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "cjson_exam.h"
+#include "udp_exam3.h"
 
 #define MAX_LOADSTRING 100
 
@@ -26,11 +26,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
-	plusEngine::startUpGdiPlus();
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_CJSON_EXAM, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_UDP_EXAM3, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 응용 프로그램 초기화를 수행합니다.
@@ -39,20 +38,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CJSON_EXAM));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_UDP_EXAM3));
 
     MSG msg;
 
-    // 기본 메시지 루프입니다.
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-	plusEngine::CloseGdiPlus();
+	plusEngine::GDIPLUS_Loop(msg,Rect(0,0,320,240) );   
 
     return (int) msg.wParam;
 }
@@ -75,10 +65,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CJSON_EXAM));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_UDP_EXAM3));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CJSON_EXAM);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_UDP_EXAM3);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -107,30 +97,34 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
+   MoveWindow(hWnd, 0,0,500, 400,TRUE);
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
    return TRUE;
 }
 
-//
-//  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  목적:  주 창의 메시지를 처리합니다.
-//
-//  WM_COMMAND  - 응용 프로그램 메뉴를 처리합니다.
-//  WM_PAINT    - 주 창을 그립니다.
-//  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
-//
-//
+
+extern void initGame();
+extern void finishGame();
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
 	case WM_CREATE:
 	{
+		SetTimer(hWnd, 1, 1000, NULL);
+	}
+		break;
+	case WM_TIMER:
+	{
+		UINT nTimerId = wParam;
+		if (nTimerId == 1) {
+			initGame();
+			KillTimer(hWnd, nTimerId);
+		}
 		
-
 	}
 		break;
     case WM_COMMAND:
@@ -155,37 +149,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다.
-
-			char *my_json_string = "{\"testInt\":1,\"testFloat\":3.14,\"testStr\":\"hello\"}";
-			cJSON * root = cJSON_Parse(my_json_string);
-
-			cJSON *testInt = cJSON_GetObjectItemCaseSensitive(root, "testInt");
-			cJSON *testFloat = cJSON_GetObjectItemCaseSensitive(root, "testFloat");
-			cJSON *testStr = cJSON_GetObjectItemCaseSensitive(root, "testStr");
-
-			//char -> wchar_t
-			TCHAR szBuf[256];
-			mbstowcs(szBuf, testStr->valuestring, strlen(testStr->valuestring) + 1);
-			Graphics grp(hdc);
-			plusEngine::printf(&grp, 10, 10, L"%d %f %s", testInt->valueint, testFloat->valuedouble,szBuf);
-
-			{
-				cJSON *root = NULL;
-				root = cJSON_CreateObject();
-				cJSON_AddNumberToObject(root, "xpos", 192);
-				cJSON_AddNumberToObject(root, "ypos", 112);
-				char szBuf[512];
-				cJSON_PrintPreallocated(root, szBuf, 512, 0);
-				TCHAR szBufw[256];
-				mbstowcs(szBufw, szBuf,512);
-				plusEngine::printf(&grp, 10, 30, L"%s",szBufw);
-			}
-
-
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+		finishGame();
         PostQuitMessage(0);
         break;
     default:
