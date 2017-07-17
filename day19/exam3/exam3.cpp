@@ -29,7 +29,6 @@ int main()
 	printf("³ªÀÌ : %d \n", pJsonAge->valueint);
 	printf("Å° : %lf \n", pJsonHeight->valuedouble);
 
-
 	fclose(fp);
 
     return 0;
