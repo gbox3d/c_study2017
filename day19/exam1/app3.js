@@ -10,3 +10,4 @@ udp_socket.on("message", function (msg, rinfo) {
 });
 
 udp_socket.bind(3333);
+console.log('server binding at 3333')
