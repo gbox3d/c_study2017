@@ -70,6 +70,15 @@ DWORD WINAPI ThreadFunc(LPVOID temp)
 			OutputDebugStringA("success recv data \n");
 			OutputDebugStringA(pUdp->m_buf);
 			OutputDebugStringA("\n");
+
+			cJSON *root = cJSON_Parse(pUdp->m_buf);
+			cJSON *xpos = cJSON_GetObjectItemCaseSensitive(root, "xpos");
+			cJSON *ypos = cJSON_GetObjectItemCaseSensitive(root, "ypos");
+
+			g_RemotePlayer.m_pos.X = xpos->valueint-160;
+			g_RemotePlayer.m_pos.Y = ypos->valueint-120;
+
+
 		}
 	}
 

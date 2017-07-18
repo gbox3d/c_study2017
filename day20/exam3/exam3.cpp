@@ -146,7 +146,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_LBUTTONDOWN:
 	{
+		int xpos = LOWORD(lParam);
+		int ypos = HIWORD(lParam);
 
+		cJSON *root = NULL;
+		root = cJSON_CreateObject();
+		cJSON_AddNumberToObject(root, "xpos", xpos);
+		cJSON_AddNumberToObject(root, "ypos", ypos);
+		
+		char szBuf[256];
+		cJSON_PrintPreallocated(root, szBuf, 256, 0);
+
+		sockaddr_in si_other;
+		int slen = sizeof(si_other);
+		memset((char *)&si_other, 0, slen);
+
+		si_other.sin_family = AF_INET;
+		si_other.sin_port = htons(3333);
+		si_other.sin_addr.S_un.S_addr = inet_addr("192.168.0.7");
+
+		if (sendto(g_SocketID, szBuf, strlen(szBuf), 0, (sockaddr *)&si_other, slen) == SOCKET_ERROR) {
+			OutputDebugStringA("sendto error\n");
+		}
+		else {
+			OutputDebugStringA("sendto success\n");
+			OutputDebugStringA(szBuf);
+			OutputDebugStringA("\n");
+
+		}
 	}
 		break;
     case WM_COMMAND:
