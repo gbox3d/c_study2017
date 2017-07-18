@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "udp_exam3", "udp_exam3\udp_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "udp_exam4_packetGen", "udp_exam4_packetGen\udp_exam4_packetGen.vcxproj", "{17FD734C-5214-4EF8-B888-E2AB4400C6DF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game_maze", "game_maze\game_maze.vcxproj", "{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -241,6 +243,14 @@ Global
 		{17FD734C-5214-4EF8-B888-E2AB4400C6DF}.Release|x64.Build.0 = Release|x64
 		{17FD734C-5214-4EF8-B888-E2AB4400C6DF}.Release|x86.ActiveCfg = Release|Win32
 		{17FD734C-5214-4EF8-B888-E2AB4400C6DF}.Release|x86.Build.0 = Release|Win32
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Debug|x64.ActiveCfg = Debug|x64
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Debug|x64.Build.0 = Debug|x64
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Debug|x86.ActiveCfg = Debug|Win32
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Debug|x86.Build.0 = Debug|Win32
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Release|x64.ActiveCfg = Release|x64
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Release|x64.Build.0 = Release|x64
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Release|x86.ActiveCfg = Release|Win32
+		{9B8E1865-CF1A-4A7C-8ADF-0506437E9B65}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

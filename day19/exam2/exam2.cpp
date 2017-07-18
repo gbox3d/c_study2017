@@ -31,6 +31,8 @@ int main()
 	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
 	si_other.sin_port = htons( PORT );
 
+	printf("soket open success to %s \n", SERVER);
+
 	while (1) {
 		printf("enter any message : ");
 		scanf("%s", message);
