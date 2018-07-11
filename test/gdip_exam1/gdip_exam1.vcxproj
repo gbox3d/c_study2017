@@ -23,7 +23,7 @@
     <ProjectGuid>{304F7693-6EE4-4C26-852B-C5D09DBBFF90}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>gdip_exam1</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
